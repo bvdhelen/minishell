@@ -1,0 +1,78 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/10/04 12:23:09 by joperez2          #+#    #+#              #
+#    Updated: 2025/03/07 13:15:31 by joperez2         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+SRC	=	ft_atoi.c \
+		ft_isalpha.c \
+		ft_itoa.c \
+		ft_memmove.c \
+		ft_putnbr_fd.c \
+		ft_strdup.c \
+		ft_strlcpy.c \
+		ft_strnstr.c \
+		ft_tolower.c \
+		ft_bzero.c \
+		ft_isascii.c \
+		ft_memchr.c \
+		ft_memset.c \
+		ft_putstr_fd.c \
+		ft_striteri.c \
+		ft_strlen.c \
+		ft_strrchr.c \
+		ft_toupper.c \
+		ft_calloc.c \
+		ft_isdigit.c \
+		ft_memcmp.c \
+		ft_putchar_fd.c \
+		ft_split.c \
+		ft_strjoin.c \
+		ft_strmapi.c \
+		ft_strtrim.c \
+		ft_isalnum.c \
+		ft_isprint.c \
+		ft_memcpy.c \
+		ft_putendl_fd.c \
+		ft_strchr.c \
+		ft_strlcat.c \
+		ft_strncmp.c \
+		ft_substr.c \
+		ft_printf.c \
+		utils_printf.c \
+		get_next_line.c \
+		get_next_line_utils.c
+
+CC = cc
+
+CFLAGS = -Wall -Wextra -Werror -fPIC
+NAME = libft.a
+
+INCLUDE = libft.h
+
+
+OBJ = $(SRC:.c=.o)
+
+all: $(NAME)
+		
+$(NAME): $(OBJ) $(INCLUDE)
+			@ar rcs $(NAME) $(OBJ)
+
+%.0: %.c
+		$(CC) $(CFLAGS) -I, -c -o $@ $c
+
+clean:
+	rm -f $(OBJ)
+								
+fclean: clean
+		rm -f $(NAME)
+				
+re: fclean all
+
+.PHONY: all clean fclean re
