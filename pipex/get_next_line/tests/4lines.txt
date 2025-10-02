@@ -1,0 +1,4 @@
+Hola, esta es la línea 1.
+Esta es la línea 2.
+Aquí viene la línea 3.
+Fin del archivo.
