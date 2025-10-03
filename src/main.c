@@ -1,29 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-//#include <readline/readline.h>
-//#include <readline/history.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
-/* int	main(void)
+int main(void)
 {
-	char	*rl;
+    char *line;
 
-	rl = readline(":-) ");
-	printf("%s\n", rl);
-	free(rl);
-	return (0);
-} */
+    while (1)
+    {
+        line = readline("minishell$ ");
+        if (!line) // Ctrl-D
+        {
+            printf("exit\n");
+            break;
+        }
+        if (*line)
+            add_history(line);
 
-int	main(void)
-{
-	char	*pwd;
-
-	pwd = getcwd(NULL, 0);
-	printf("%s\n", pwd);
-	free(pwd);
-	chdir("/home/danielji/Documents/philosophers");
-	pwd = getcwd(NULL, 0);
-	printf("%s\n", pwd);
-	free(pwd);
-	return (0);
+        // TODO: pasar 'line' al tokenizador / parser
+        free(line);
+    }
+    return 0;
 }
