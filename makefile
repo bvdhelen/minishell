@@ -1,8 +1,10 @@
-
 NAME    = minishell
 
 CC      = cc
 CFLAGS  = -Wall -Wextra -Werror
+
+# librerías para el enlace
+LDLIBS  = -lreadline
 
 # Códigos de color
 BLACK = \033[0;30m
@@ -17,12 +19,15 @@ GREY = \033[0;90m
 RESET = \033[0m
 
 SRC = \
-	src/main.c \
-	src/parser/expander.c \
-	src/parser/parser.c \
-	src/parser/quotes.c \
-	src/parser/tokenizer.c \
-	# src/exec \
+    src/main.c \
+    src/parser/expander.c \
+    src/parser/parser.c \
+    src/parser/quotes.c \
+    src/parser/tokenizer.c \
+    src/parser/tokenizer_buf.c \
+    src/parser/tokenizer_word.c \
+    src/parser/tokenizer_pipe.c \
+    src/parser/tokenizer_utils.c
 
 OBJS = $(SRC:.c=.o)
 
@@ -30,7 +35,7 @@ OBJS = $(SRC:.c=.o)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME): header $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LDLIBS)
 	@echo
 	@echo "$(GREEN)<<< minishell compiled >>>$(RESET)"
 	@echo
@@ -56,20 +61,22 @@ norminette:
 	@echo "$(GREEN)<<< norminette check OK >>>$(RESET)"
 	@echo
 
-# ASCII Art
 header:
 	@echo
-	@echo "$(GREY)           __    _ __                       __                  ";
-	@echo "$(GREY)    ____  / /_  (_) /___  _________  ____  / /_  ___  __________";
-	@echo "$(GREY)   / __ \/ __ \/ / / __ \/ ___/ __ \/ __ \/ __ \/ _ \/ ___/ ___/";
-	@echo "$(GREY)  / /_/ / / / / / / /_/ (__  ) /_/ / /_/ / / / /  __/ /  (__  ) ";
-	@echo "$(GREY) / .___/_/ /_/_/_/\____/____/\____/ .___/_/ /_/\___/_/  /____/  ";
-	@echo "$(GREY)/_/        ____  _________  __  _/_/_  _____/ /_                ";
-	@echo "$(GREY)          / __ \/ ___/ __ \/ / / / _ \/ ___/ __/                ";
-	@echo "$(GREY)         / /_/ / /  / /_/ / /_/ /  __/ /__/ /_                  ";
-	@echo "$(GREY)        / .___/_/   \____/\__, /\___/\___/\__/                  ";
-	@echo "$(GREY)       /_/               /____/                                 ";
-	@echo " $(RESET) "
+	@echo "$(MAGENTA)┌──────────────────────────────────────────────────────────────────────────────┐$(RESET)"
+	@echo "$(MAGENTA)│$(RESET)                           $(BLUE)★  42 Project  ★$(RESET)                                   $(MAGENTA)│$(RESET)"
+	@echo "$(MAGENTA)│$(RESET)                                                                              $(MAGENTA)│$(RESET)"
+	@echo "$(MAGENTA)│$(RESET)        $(CYAN)███╗   ███╗██╗███╗   ██╗██╗███████╗██╗  ██╗███████╗██╗     ██╗      $(RESET)  $(MAGENTA)│$(RESET)"
+	@echo "$(MAGENTA)│$(RESET)        $(CYAN)████╗ ████║██║████╗  ██║██║██╔════╝██║  ██║██╔════╝██║     ██║      $(RESET)  $(MAGENTA)│$(RESET)"
+	@echo "$(MAGENTA)│$(RESET)        $(CYAN)██╔████╔██║██║██╔██╗ ██║██║███████╗███████║█████╗  ██║     ██║      $(RESET)  $(MAGENTA)│$(RESET)"
+	@echo "$(MAGENTA)│$(RESET)        $(CYAN)██║╚██╔╝██║██║██║╚██╗██║██║╚════██║██╔══██║██╔══╝  ██║     ██║      $(RESET)  $(MAGENTA)│$(RESET)"
+	@echo "$(MAGENTA)│$(RESET)        $(CYAN)██║ ╚═╝ ██║██║██║ ╚████║██║███████║██║  ██║███████╗███████╗███████╗ $(RESET)  $(MAGENTA)│$(RESET)"
+	@echo "$(MAGENTA)│$(RESET)        $(CYAN)╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝ $(RESET)  $(MAGENTA)│$(RESET)"
+	@echo "$(MAGENTA)│$(RESET)                                                                              $(MAGENTA)│$(RESET)"
+	@echo "$(MAGENTA)│$(RESET)                $(GREEN)◆◆◆   M  I  N  I  S  H  E  L  L   ◆◆◆$(RESET)                         $(MAGENTA)│$(RESET)"
+	@echo "$(MAGENTA)│$(RESET)                     $(BLUE)by eldiaz-c $(WHITE)&$(BLUE) joperez2$(RESET)                                   $(MAGENTA)│$(RESET)"
+	@echo "$(MAGENTA)└──────────────────────────────────────────────────────────────────────────────┘$(RESET)"
 	@echo
+
 
 .PHONY: all clean fclean re norminette header

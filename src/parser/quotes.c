@@ -1,122 +1,123 @@
 
-/*Función que salta un token completo en la cadena, respetando las comillas*/
-static int	skip_token(const char *s, int i)
-{
-	char	quote;
+#include "../../minishell.h"
 
-	if (s[i] == '\'' || s[i] == '"')
-	{
-		quote = s[i];
+/* longitud del token sin contar comillas */
+static int	get_token_len(const char *s, int i)
+{
+	int		len;
+	char	q;
+
+	while (s[i] && isspace((unsigned char)s[i]))
 		i++;
-		while (s[i] && s[i] != quote)
-			i++;
-		if (s[i] == quote)
-			i++;
-	}
-	else
+	len = 0;
+	while (s[i] && !isspace((unsigned char)s[i]))
 	{
-		while (s[i] && !ft_isspace(s[i]))
-			i++;
+		if (s[i] == '\'' || s[i] == '"')
+		{
+			q = s[i++];
+			while (s[i] && s[i] != q) { len++; i++; }
+			if (s[i]) i++;
+		}
+		else { len++; i++; }
 	}
-	return (i);
+	return (len);
 }
 
-/*Función que cuenta cuántas palabras (tokens) hay en la cadena,
-respetando las comillas*/
+/* extrae el token (concatena trozos y quita comillas) */
+static char	*extract_shell_word(const char *s, int i)
+{
+	int		len;
+	char	*word;
+	int		pos;
+	char	q;
+
+	while (s[i] && isspace((unsigned char)s[i]))
+		i++;
+	len = get_token_len(s, i);
+	word = malloc((size_t)len + 1);
+	if (!word) return (NULL);
+	pos = 0;
+	while (s[i] && !isspace((unsigned char)s[i]))
+	{
+		if (s[i] == '\'' || s[i] == '"')
+		{
+			q = s[i++];
+			while (s[i] && s[i] != q) { word[pos++] = s[i++]; }
+			if (s[i]) i++;
+		}
+		else word[pos++] = s[i++];
+	}
+	word[pos] = '\0';
+	return (word);
+}
+
+/* cuenta tokens respetando comillas */
 static int	count_shell_words(const char *s)
 {
 	int		i;
 	int		count;
+	char	q;
 
 	i = 0;
 	count = 0;
 	while (s[i])
 	{
-		while (s[i] && ft_isspace(s[i]))
-			i++;
-		if (!s[i])
-			break ;
+		while (s[i] && isspace((unsigned char)s[i])) i++;
+		if (!s[i]) break;
 		count++;
-		i = skip_token(s, i);
+		while (s[i] && !isspace((unsigned char)s[i]))
+		{
+			if (s[i] == '\'' || s[i] == '"')
+			{
+				q = s[i++];
+				while (s[i] && s[i] != q) i++;
+				if (s[i]) i++;
+			}
+			else i++;
+		}
 	}
 	return (count);
 }
 
-/*Función que calcula la longitud de un token (sin espacios),
-respetando las comillas*/
-static int	get_token_len(const char *s, int i)
+/* avanza i hasta el final del token actual (incluye comillas) */
+static int	advance_token_end(const char *s, int i)
 {
-	int		len;
-	char	quote;
+	char	q;
 
-	len = 0;
-	if (s[i] == '\'' || s[i] == '"')
+	while (s[i] && !isspace((unsigned char)s[i]))
 	{
-		quote = s[i];
-		i++;
-		while (s[i] && s[i] != quote)
+		if (s[i] == '\'' || s[i] == '"')
 		{
-			len++;
-			i++;
+			q = s[i++];
+			while (s[i] && s[i] != q) i++;
+			if (s[i]) i++;
 		}
+		else i++;
 	}
-	else
-	{
-		while (s[i] && !ft_isspace(s[i]))
-		{
-			len++;
-			i++;
-		}
-	}
-	return (len);
+	return (i);
 }
 
-/*Función que extrae una palabra (token) de la cadena,
-respetando las comillas*/
-static char	*extract_shell_word(const char *s, int i)
-{
-	int		len;
-	char	*word;
-	char	*trimmed;
-
-	while (s[i] && ft_isspace(s[i]))
-		i++;
-	len = get_token_len(s, i);
-	if (s[i] == '\'' || s[i] == '"')
-		i++;
-	word = ft_substr(s, i, len);
-	if (!word)
-		return (NULL);
-	trimmed = ft_strtrim(word, "'\"");
-	free(word);
-	return (trimmed);
-}
-
-/*Función que divide una cadena en tokens, respetando las comillas*/
+/* split público con comillas (concatena segmentos) */
 char	**ft_split_with_quotes(const char *s)
 {
 	char	**result;
 	char	*word;
-	int		word_count;
+	int		words;
 	int		i;
 	int		j;
 
-	word_count = count_shell_words(s);
-	result = malloc((word_count + 1) * sizeof(char *));
-	if (!result)
-		return (NULL);
-	i = 0;
-	j = 0;
-	while (j < word_count)
+	if (!s) return (NULL);
+	words = count_shell_words(s);
+	result = malloc((words + 1) * sizeof(char *));
+	if (!result) return (NULL);
+	i = 0; j = 0;
+	while (j < words)
 	{
-		while (s[i] && ft_isspace(s[i]))
-			i++;
+		while (s[i] && isspace((unsigned char)s[i])) i++;
 		word = extract_shell_word(s, i);
-		if (!word)
-			return (free_memory(result, j - 1));
-		result[j] = word;
-		j++;
-		i = skip_token(s, i);
+		if (!word) return (free_split(result, j));
+		result[j++] = word;
+		i = advance_token_end(s, i);
 	}
 	result[j] = NULL;
 	return (result);
