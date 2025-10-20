@@ -1,4 +1,4 @@
-#include "./minishell.h"
+#include "../../minishell.h"
 
 static char *ft_strndup(const char *s, size_t n)
 {
@@ -276,4 +276,3 @@ void print_tokens(t_token *tok)
         tok = tok->next;
     }
 }
-

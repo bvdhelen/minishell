@@ -1,6 +1,6 @@
 
 #ifndef MINISHELL_H
-#define MINISHELL.H
+#define MINISHELL_H
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdio.h>
@@ -24,5 +24,10 @@ typedef struct s_token
     char            *value;
     struct s_token  *next;
 }   t_token;
+
+t_token *tokenize(const char *line);
+void free_tokens(t_token *tok);
+void print_tokens(t_token *tok);
+
 
 #endif
