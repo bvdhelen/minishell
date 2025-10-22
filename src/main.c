@@ -1,7 +1,16 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/22 15:02:36 by eldiaz-c          #+#    #+#             */
+/*   Updated: 2025/10/22 15:12:05 by eldiaz-c         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/minishell.h"
 
 int main(void)
 {
@@ -13,7 +22,7 @@ int main(void)
         if (!line) // Ctrl-D
         {
             printf("exit\n");
-            break;
+            break ;
         }
         if (*line)
             add_history(line);
@@ -21,5 +30,5 @@ int main(void)
         // TODO: pasar 'line' al tokenizador / parser
         free(line);
     }
-    return 0;
+    return (0);
 }

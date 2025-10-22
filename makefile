@@ -1,7 +1,7 @@
 NAME    = minishell
 
 CC      = cc
-CFLAGS  = -Wall -Wextra -Werror
+CFLAGS  = -Wall -Wextra -Werror -Iincludes
 
 # librerías para el enlace
 LDLIBS  = -lreadline
@@ -35,7 +35,7 @@ OBJS = $(SRC:.c=.o)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME): header $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LDLIBS)
+	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LDLIBS)
 	@echo
 	@echo "$(GREEN)<<< minishell compiled >>>$(RESET)"
 	@echo
@@ -73,7 +73,7 @@ header:
 	@echo "$(MAGENTA)│$(RESET)        $(CYAN)██║ ╚═╝ ██║██║██║ ╚████║██║███████║██║  ██║███████╗███████╗███████╗ $(RESET)  $(MAGENTA)│$(RESET)"
 	@echo "$(MAGENTA)│$(RESET)        $(CYAN)╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝ $(RESET)  $(MAGENTA)│$(RESET)"
 	@echo "$(MAGENTA)│$(RESET)                                                                              $(MAGENTA)│$(RESET)"
-	@echo "$(MAGENTA)│$(RESET)                $(GREEN)◆◆◆   M  I  N  I  S  H  E  L  L   ◆◆◆$(RESET)                         $(MAGENTA)│$(RESET)"
+	@echo "$(MAGENTA)│$(RESET)                $(GREEN)<<<   M  I  N  I  S  H  E  L  L   >>>$(RESET)                         $(MAGENTA)│$(RESET)"
 	@echo "$(MAGENTA)│$(RESET)                     $(BLUE)by eldiaz-c $(WHITE)&$(BLUE) joperez2$(RESET)                                   $(MAGENTA)│$(RESET)"
 	@echo "$(MAGENTA)└──────────────────────────────────────────────────────────────────────────────┘$(RESET)"
 	@echo

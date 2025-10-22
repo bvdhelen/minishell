@@ -1,9 +1,21 @@
-#include "../../minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenizer_word.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/22 15:07:05 by eldiaz-c          #+#    #+#             */
+/*   Updated: 2025/10/22 15:15:32 by eldiaz-c         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../includes/minishell.h"
 
 int	handle_single_quote(const char *line, size_t *i,
 		char **buf, size_t *len, size_t *cap, int *err)
 {
-	size_t start;
+	size_t	start;
 
 	(*i)++;
 	start = *i;
@@ -23,7 +35,7 @@ int	handle_single_quote(const char *line, size_t *i,
 int	handle_double_quote(const char *line, size_t *i,
 		char **buf, size_t *len, size_t *cap, int *err)
 {
-	size_t start;
+	size_t	start;
 
 	(*i)++;
 	start = *i;
@@ -86,5 +98,3 @@ char	*read_word(const char *line, size_t *i, int *err)
 	}
 	return (buf);
 }
-
-

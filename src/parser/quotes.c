@@ -1,5 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   quotes.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/22 15:10:13 by eldiaz-c          #+#    #+#             */
+/*   Updated: 2025/10/22 15:10:13 by eldiaz-c         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "../../includes/minishell.h"
 
 /* longitud del token sin contar comillas */
 static int	get_token_len(const char *s, int i)
