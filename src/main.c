@@ -6,7 +6,7 @@
 /*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:02:36 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/10/22 15:12:05 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/10/23 12:59:22 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 int main(void)
 {
-    char *line;
+    char 	*line;
+	t_token	*tok;
 
     while (1)
     {
@@ -26,7 +27,12 @@ int main(void)
         }
         if (*line)
             add_history(line);
-
+		tok = tokenize(line);
+		if (tok)
+		{
+			print_tokens(tok);
+			free_tokens(tok);
+		}
         // TODO: pasar 'line' al tokenizador / parser
         free(line);
     }

@@ -6,7 +6,7 @@
 /*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:04:19 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/10/22 15:05:53 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/10/23 14:15:41 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <readline/history.h>
 # include <string.h>
 # include <ctype.h>
+# include <sys/stat.h> //para q??
 
 typedef enum e_tok_type
 {
@@ -58,5 +59,37 @@ int		handle_pipe(const char *line, size_t *i, t_token **head);
 
 /* quotes split (si la usas desde otros módulos) */
 char	**ft_split_with_quotes(const char *s);
+
+/* ================================================
+**					EXECUTION
+** ================================================ */
+
+typedef struct s_cmd
+{
+	char 			**argv;
+	int				infile;
+	int				outfile;
+	int				is_builtin;
+	struct s_cmd	*next;
+}	t_cmd;
+
+/* builtins */
+int		ft_echo(char **argv);
+int		ft_cd(char **argv);
+int		ft_pwd(char **argv);
+int		ft_export(char **argv, char **envp);
+int		ft_unset(char **argv, char **envp);
+int		ft_env(char **envp);
+int		ft_exit(char **argv);
+
+/* execution */
+int		execute_command(t_cmd *cmd, char **envp);
+int		execute_pipeline(t_cmd *cmd_list, char **envp);
+
+/* signals */
+void	setup_signals(void);
+
+/* error */
+void	error_exit(const char *msg, int code);
 
 #endif

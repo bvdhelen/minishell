@@ -20,6 +20,7 @@ RESET = \033[0m
 
 SRC = \
     src/main.c \
+	src/error_exit.c \
     src/parser/expander.c \
     src/parser/parser.c \
     src/parser/quotes.c \
