@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include "../../includes/minishell.h"
 
 static t_cmd	*new_cmd(void)
@@ -76,3 +77,18 @@ t_cmd	*parse_pipeline(t_token *tok)
 	}
 	return (head);
 }
+=======
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/22 15:48:56 by eldiaz-c          #+#    #+#             */
+/*   Updated: 2025/10/22 15:48:56 by eldiaz-c         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/minishell.h"
+>>>>>>> refs/remotes/origin/main

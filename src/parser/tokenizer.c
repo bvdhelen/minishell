@@ -6,7 +6,7 @@
 /*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:06:52 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/10/22 15:15:37 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/10/23 14:18:35 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ static int	handle_word_result(char *w, int err, t_token **head)
 {
 	if (err)
 	{
-		fprintf(stderr, "minishell: syntax error: unclosed quote\n");
+		error_exit("syntax error: unclosed quote", 1);
+		//fprintf(stderr, "minishell: syntax error: unclosed quote\n");
 		free(w);
 		return (0);
 	}

@@ -20,7 +20,11 @@ RESET = \033[0m
 
 SRC = \
     src/main.c \
+<<<<<<< HEAD
 	src/parser/expander_word.c \
+=======
+	src/error_exit.c \
+>>>>>>> refs/remotes/origin/main
     src/parser/expander.c \
     src/parser/parser.c \
     src/parser/parser_utils.c \

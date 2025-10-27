@@ -6,7 +6,11 @@
 /*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:04:19 by eldiaz-c          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/10/23 12:17:44 by joperez2         ###   ########.fr       */
+=======
+/*   Updated: 2025/10/23 14:15:41 by eldiaz-c         ###   ########.fr       */
+>>>>>>> refs/remotes/origin/main
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +24,7 @@
 # include <readline/history.h>
 # include <string.h>
 # include <ctype.h>
+# include <sys/stat.h> //para q??
 
 typedef enum e_tok_type
 {
@@ -65,6 +70,7 @@ int		handle_pipe(const char *line, size_t *i, t_token **head);
 /* quotes split */
 char	**ft_split_with_quotes(const char *s);
 
+<<<<<<< HEAD
 /* PARSER */
 t_cmd   *parse_pipeline(t_token *tok);
 void    free_cmds(t_cmd *cmd);
@@ -79,5 +85,38 @@ int     is_var_first(int c);
 int     is_var_next(int c);
 char    *lookup_env(const char *name, char **envp);
 char    *expand_word(const char *in, char **envp, int last_status);
+=======
+/* ================================================
+**					EXECUTION
+** ================================================ */
+
+typedef struct s_cmd
+{
+	char 			**argv;
+	int				infile;
+	int				outfile;
+	int				is_builtin;
+	struct s_cmd	*next;
+}	t_cmd;
+
+/* builtins */
+int		ft_echo(char **argv);
+int		ft_cd(char **argv);
+int		ft_pwd(char **argv);
+int		ft_export(char **argv, char **envp);
+int		ft_unset(char **argv, char **envp);
+int		ft_env(char **envp);
+int		ft_exit(char **argv);
+
+/* execution */
+int		execute_command(t_cmd *cmd, char **envp);
+int		execute_pipeline(t_cmd *cmd_list, char **envp);
+
+/* signals */
+void	setup_signals(void);
+
+/* error */
+void	error_exit(const char *msg, int code);
+>>>>>>> refs/remotes/origin/main
 
 #endif
