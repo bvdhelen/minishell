@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:02:36 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/10/22 15:12:05 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/10/23 11:31:40 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,26 @@
 
 int main(void)
 {
-    char *line;
+	char	*line;
+	t_token	*tok;
 
-    while (1)
-    {
-        line = readline("minishell$ ");
-        if (!line) // Ctrl-D
-        {
-            printf("exit\n");
-            break ;
-        }
-        if (*line)
-            add_history(line);
-
-        // TODO: pasar 'line' al tokenizador / parser
-        free(line);
-    }
-    return (0);
+	while (1)
+	{
+		line = readline("minishell$ ");
+		if (!line)
+		{
+			printf("exit\n");
+			break ;
+		}
+		if (*line)
+			add_history(line);
+		tok = tokenize(line);
+		if (tok)
+		{
+			print_tokens(tok);
+			free_tokens(tok);
+		}
+		free(line);
+	}
+	return (0);
 }

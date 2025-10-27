@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:04:19 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/10/22 15:05:53 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/10/23 12:17:44 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,12 @@ typedef struct s_token
 	struct s_token	*next;
 }	t_token;
 
+typedef struct s_cmd
+{
+	char            **argv;
+	struct s_cmd    *next;
+}   t_cmd;
+
 /* tokenizer / parser public API */
 t_token	*tokenize(const char *line);
 void	free_tokens(t_token *tok);
@@ -56,7 +62,22 @@ char	*read_word(const char *line, size_t *i, int *err);
 /* pipe handler (separated) */
 int		handle_pipe(const char *line, size_t *i, t_token **head);
 
-/* quotes split (si la usas desde otros módulos) */
+/* quotes split */
 char	**ft_split_with_quotes(const char *s);
+
+/* PARSER */
+t_cmd   *parse_pipeline(t_token *tok);
+void    free_cmds(t_cmd *cmd);
+
+/* helpers parser */
+int     append_cmd(t_cmd **head, t_cmd *node);
+int     push_arg(t_cmd *cmd, const char *word);
+
+/* EXPANDER */
+int     expand_tokens(t_token *head, char **envp, int last_status);
+int     is_var_first(int c);
+int     is_var_next(int c);
+char    *lookup_env(const char *name, char **envp);
+char    *expand_word(const char *in, char **envp, int last_status);
 
 #endif

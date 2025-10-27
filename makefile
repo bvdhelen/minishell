@@ -20,14 +20,17 @@ RESET = \033[0m
 
 SRC = \
     src/main.c \
+	src/parser/expander_word.c \
     src/parser/expander.c \
     src/parser/parser.c \
+    src/parser/parser_utils.c \
     src/parser/quotes.c \
     src/parser/tokenizer.c \
     src/parser/tokenizer_buf.c \
     src/parser/tokenizer_word.c \
     src/parser/tokenizer_pipe.c \
     src/parser/tokenizer_utils.c
+
 
 OBJS = $(SRC:.c=.o)
 
