@@ -6,61 +6,33 @@
 /*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:02:36 by eldiaz-c          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2025/10/23 11:31:40 by joperez2         ###   ########.fr       */
-=======
-/*   Updated: 2025/10/23 12:59:22 by eldiaz-c         ###   ########.fr       */
->>>>>>> refs/remotes/origin/main
+/*   Updated: 2025/10/27 12:04:12 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "../includes/minishell.h"
 
-int main(void)
+extern char **environ;
+
+int	main(void)
 {
-<<<<<<< HEAD
 	char	*line;
 	t_token	*tok;
+	t_cmd	*pipe;
 
 	while (1)
 	{
 		line = readline("minishell$ ");
-		if (!line)
-		{
-			printf("exit\n");
-			break ;
-		}
-		if (*line)
-			add_history(line);
-=======
-    char 	*line;
-	t_token	*tok;
-
-    while (1)
-    {
-        line = readline("minishell$ ");
-        if (!line) // Ctrl-D
-        {
-            printf("exit\n");
-            break ;
-        }
-        if (*line)
-            add_history(line);
->>>>>>> refs/remotes/origin/main
+		if (!line) { printf("exit\n"); break ; }
+		if (*line) add_history(line);
 		tok = tokenize(line);
-		if (tok)
-		{
-			print_tokens(tok);
-			free_tokens(tok);
-		}
-<<<<<<< HEAD
+		if (!tok) { free(line); continue ; }
+		if (!expand_tokens(tok, environ, 0)) { free_tokens(tok); free(line); continue ; }
+		pipe = parse_pipeline(tok);
+		if (pipe) { print_cmds(pipe); free_cmds(pipe); }
+		free_tokens(tok);
 		free(line);
 	}
 	return (0);
-=======
-        // TODO: pasar 'line' al tokenizador / parser
-        free(line);
-    }
-    return (0);
->>>>>>> refs/remotes/origin/main
 }

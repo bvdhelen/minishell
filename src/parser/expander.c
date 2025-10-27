@@ -6,7 +6,7 @@
 /*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 12:33:02 by joperez2          #+#    #+#             */
-/*   Updated: 2025/10/23 12:12:06 by joperez2         ###   ########.fr       */
+/*   Updated: 2025/10/27 11:56:31 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,8 @@ int	expand_tokens(t_token *head, char **envp, int last_status)
 	{
 		if (head->type == T_WORD && head->value)
 		{
-			nw = expand_word(head->value, envp, last_status);
-			if (!nw)
-				return (0);
+			nw = expand_word(head->value, head->meta, envp, last_status);
+			if (!nw) return (0);
 			free(head->value);
 			head->value = nw;
 		}

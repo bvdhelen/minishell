@@ -4,16 +4,10 @@ int	append_cmd(t_cmd **head, t_cmd *node)
 {
 	t_cmd	*tmp;
 
-	if (!node)
-		return (0);
-	if (!*head)
-	{
-		*head = node;
-		return (1);
-	}
+	if (!node) return (0);
+	if (!*head) { *head = node; return (1); }
 	tmp = *head;
-	while (tmp->next)
-		tmp = tmp->next;
+	while (tmp->next) tmp = tmp->next;
 	tmp->next = node;
 	return (1);
 }
@@ -29,8 +23,7 @@ void	free_cmds(t_cmd *cmd)
 		if (cmd->argv)
 		{
 			i = 0;
-			while (cmd->argv[i])
-				free(cmd->argv[i++]);
+			while (cmd->argv[i]) free(cmd->argv[i++]);
 			free(cmd->argv);
 		}
 		free(cmd);
