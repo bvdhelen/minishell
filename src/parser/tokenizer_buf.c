@@ -6,7 +6,7 @@
 /*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:08:26 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/10/22 15:15:16 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/10/29 14:27:46 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ int	buf_ensure(char **buf, size_t *cap, size_t need)
 	return (1);
 }
 
-int	buf_append_chars(char **buf, size_t *len, size_t *cap, const char *s, size_t n)
+int	buf_append_chars(char **buf, size_t *len, size_t *cap,
+				const char *s, size_t n)
 {
 	if (!buf_ensure(buf, cap, *len + n + 1))
 		return (0);

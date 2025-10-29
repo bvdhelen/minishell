@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 12:33:02 by joperez2          #+#    #+#             */
-/*   Updated: 2025/10/27 11:56:31 by joperez2         ###   ########.fr       */
+/*   Updated: 2025/10/29 14:22:35 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,8 @@ int	expand_tokens(t_token *head, char **envp, int last_status)
 		if (head->type == T_WORD && head->value)
 		{
 			nw = expand_word(head->value, head->meta, envp, last_status);
-			if (!nw) return (0);
+			if (!nw)
+				return (0);
 			free(head->value);
 			head->value = nw;
 		}

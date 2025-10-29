@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:04:19 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/10/27 12:05:49 by joperez2         ###   ########.fr       */
+/*   Updated: 2025/10/29 14:33:49 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ char	**free_split(char **arr, int filled);
 /* tokenizer buffer helpers */
 char	*ft_strndup(const char *s, size_t n);
 int		buf_ensure(char **buf, size_t *cap, size_t need);
-int		buf_append_chars(char **buf, size_t *len, size_t *cap, const char *s, size_t n);
+int		buf_append_chars(char **buf, size_t *len,
+			size_t *cap, const char *s, size_t n);
 int		buf_append_char(char **buf, size_t *len, size_t *cap, char c);
 
 /* tokenizer_word.c */
@@ -81,7 +82,8 @@ int		expand_tokens(t_token *head, char **envp, int last_status);
 int		is_var_first(int c);
 int		is_var_next(int c);
 char	*lookup_env(const char *name, char **envp);
-char	*expand_word(const char *in, const char *meta, char **envp, int last_status);
+char	*expand_word(const char *in, const char *meta,
+			char **envp, int last_status);
 
 /* EXECUTION */
 int		ft_echo(char **argv);

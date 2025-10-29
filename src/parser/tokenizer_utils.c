@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:10:00 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/10/27 11:55:54 by joperez2         ###   ########.fr       */
+/*   Updated: 2025/10/29 14:10:54 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,10 @@ void	free_tokens(t_token *tok)
 	while (tok)
 	{
 		tmp = tok->next;
-		if (tok->value) free(tok->value);
-		if (tok->meta) free(tok->meta);
+		if (tok->value)
+			free(tok->value);
+		if (tok->meta)
+			free(tok->meta);
 		free(tok);
 		tok = tmp;
 	}
@@ -52,9 +54,14 @@ char	**free_split(char **arr, int filled)
 {
 	int	k;
 
-	if (!arr) return (NULL);
+	if (!arr)
+		return (NULL);
 	k = 0;
-	while (k < filled) { free(arr[k]); k++; }
+	while (k < filled)
+	{
+		free(arr[k]);
+		k++;
+	}
 	free(arr);
 	return (NULL);
 }

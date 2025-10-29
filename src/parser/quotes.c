@@ -26,10 +26,19 @@ static int	get_token_len(const char *s, int i)
 		if (s[i] == '\'' || s[i] == '"')
 		{
 			q = s[i++];
-			while (s[i] && s[i] != q) { len++; i++; }
-			if (s[i]) i++;
+			while (s[i] && s[i] != q)
+			{
+				len++;
+				i++;
+			}
+			if (s[i])
+				i++;
 		}
-		else { len++; i++; }
+		else
+		{
+			len++;
+			i++;
+		}
 	}
 	return (len);
 }
@@ -45,18 +54,22 @@ static char	*extract_shell_word(const char *s, int i)
 	while (s[i] && isspace((unsigned char)s[i]))
 		i++;
 	len = get_token_len(s, i);
-	word = malloc((size_t)len + 1);
-	if (!word) return (NULL);
+	word = malloc((size_t) len + 1);
+	if (!word)
+		return (NULL);
 	pos = 0;
 	while (s[i] && !isspace((unsigned char)s[i]))
 	{
 		if (s[i] == '\'' || s[i] == '"')
 		{
 			q = s[i++];
-			while (s[i] && s[i] != q) { word[pos++] = s[i++]; }
-			if (s[i]) i++;
+			while (s[i] && s[i] != q)
+				word[pos++] = s[i++];
+			if (s[i])
+				i++;
 		}
-		else word[pos++] = s[i++];
+		else
+			word[pos++] = s[i++];
 	}
 	word[pos] = '\0';
 	return (word);
@@ -73,18 +86,23 @@ static int	count_shell_words(const char *s)
 	count = 0;
 	while (s[i])
 	{
-		while (s[i] && isspace((unsigned char)s[i])) i++;
-		if (!s[i]) break;
+		while (s[i] && isspace((unsigned char)s[i]))
+			i++;
+		if (!s[i])
+			break ;
 		count++;
 		while (s[i] && !isspace((unsigned char)s[i]))
 		{
 			if (s[i] == '\'' || s[i] == '"')
 			{
 				q = s[i++];
-				while (s[i] && s[i] != q) i++;
-				if (s[i]) i++;
+				while (s[i] && s[i] != q)
+					i++;
+				if (s[i])
+					i++;
 			}
-			else i++;
+			else
+				i++;
 		}
 	}
 	return (count);
@@ -100,10 +118,13 @@ static int	advance_token_end(const char *s, int i)
 		if (s[i] == '\'' || s[i] == '"')
 		{
 			q = s[i++];
-			while (s[i] && s[i] != q) i++;
-			if (s[i]) i++;
+			while (s[i] && s[i] != q)
+				i++;
+			if (s[i])
+				i++;
 		}
-		else i++;
+		else
+			i++;
 	}
 	return (i);
 }
@@ -117,16 +138,21 @@ char	**ft_split_with_quotes(const char *s)
 	int		i;
 	int		j;
 
-	if (!s) return (NULL);
+	if (!s)
+		return (NULL);
 	words = count_shell_words(s);
-	result = malloc((words + 1) * sizeof(char *));
-	if (!result) return (NULL);
-	i = 0; j = 0;
+	result = malloc(sizeof(char *) * (words + 1));
+	if (!result)
+		return (NULL);
+	i = 0;
+	j = 0;
 	while (j < words)
 	{
-		while (s[i] && isspace((unsigned char)s[i])) i++;
+		while (s[i] && isspace((unsigned char)s[i]))
+			i++;
 		word = extract_shell_word(s, i);
-		if (!word) return (free_split(result, j));
+		if (!word)
+			return (free_split(result, j));
 		result[j++] = word;
 		i = advance_token_end(s, i);
 	}
