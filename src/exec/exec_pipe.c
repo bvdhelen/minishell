@@ -89,10 +89,9 @@ static void	wait_all(pid_t last_pid)
 	}
 }
 
-
 /*Función para ejecutar una lista enlazada de comandos,
 conectándolos con pipes si hay más de uno*/
-int		execute_pipeline(t_cmd *cmd_list, char **envp)
+int	execute_pipeline(t_cmd *cmd_list, char **envp)
 {
 	t_cmd	*cmd;
 	int		input_fd;

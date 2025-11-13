@@ -6,13 +6,13 @@
 /*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:02:36 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/13 21:02:19 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/13 21:42:08 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int 	g_exit_status = 0;
+int	g_exit_status = 0;
 
 int	main(void)
 {
@@ -45,7 +45,6 @@ int	main(void)
 		pipe = parse_pipeline(tok);
 		if (pipe)
 		{
-			//print_cmds(pipe);
 			if (pipe->next)
 				g_exit_status = execute_pipeline(pipe, environ);
 			else

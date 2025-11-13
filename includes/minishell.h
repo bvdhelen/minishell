@@ -6,7 +6,7 @@
 /*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:04:19 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/13 20:44:29 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/13 21:40:29 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@
 # include "ft_printf/ft_printf.h"
 # include "get_next_line/get_next_line.h"
 
-extern char **environ;
-extern int g_exit_status;
+extern char	**environ;
+extern int	g_exit_status;
 
 typedef enum e_tok_type
 {
@@ -130,6 +130,5 @@ int		ft_export(char **argv, char **envp);
 int		ft_unset(char **argv, char **envp);
 int		ft_env(char **envp);
 int		ft_exit(char **argv);
-
 
 #endif
