@@ -6,7 +6,7 @@
 /*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:04:19 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/13 21:40:29 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/13 22:58:35 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,17 +105,18 @@ void	error_exit(const char *msg, int code);
 
 /* exec_cmd.c */
 
+int		is_absolute_path(const char *cmd);
+char	*check_direct_path(const char *cmd);
+void	check_access(char *path);
+void	execute_command_direct(t_cmd *cmd, char **envp);
+int		execute_command(t_cmd *cmd, char **envp);
+
+/* exec_cmd_utils.c */
 char	*join_paths(const char *folder, const char *cmd);
 char	*search_in_paths(char **paths, char *cmd);
 char	*get_cmd_path(char *cmd, char **envp);
 char	**free_memory(char **result, int count);
 void	free_paths(char **paths);
-int		is_absolute_path(const char *cmd);
-char	*check_direct_path(const char *cmd);
-//void	check_access(char *path, char **cmd);
-void	check_access(char *path);
-void	execute_command_direct(t_cmd *cmd, char **envp);
-int		execute_command(t_cmd *cmd, char **envp);
 
 /* exec_pipe.c */
 

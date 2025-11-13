@@ -46,6 +46,7 @@ SRC = \
     src/parser/tokenizer_utils.c \
 	src/exec/exec_cmd.c \
 	src/exec/exec_pipe.c \
+	src/exec/exec_cmd_utils.c \
 
 
 OBJS = $(SRC:.c=.o)
