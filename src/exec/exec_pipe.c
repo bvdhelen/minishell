@@ -12,11 +12,10 @@
 
 #include "../../includes/minishell.h"
 
-extern char	**environ;
 extern int	g_exit_status;
 
 /*Función para ejecutar los procesos hijos desde el primero hasta el penúltimo*/
-static int	handle_middle_cmd(t_cmd *cmd, int input_fd, char **envp)
+int	handle_middle_cmd(t_cmd *cmd, int input_fd, char **envp)
 {
 	int		fd[2];
 	pid_t	pid;
@@ -46,7 +45,7 @@ static int	handle_middle_cmd(t_cmd *cmd, int input_fd, char **envp)
 }
 
 /*Función para ejecutar el último proceso hijo*/
-static pid_t	handle_last_cmd(t_cmd *cmd, int input_fd, char **envp)
+pid_t	handle_last_cmd(t_cmd *cmd, int input_fd, char **envp)
 {
 	pid_t	pid;
 
@@ -70,7 +69,7 @@ static pid_t	handle_last_cmd(t_cmd *cmd, int input_fd, char **envp)
 
 /*Función para esperar a todos los procesos hijos
 y devolver el código de salida del último comando*/
-static void	wait_all(pid_t last_pid)
+void	wait_all(pid_t last_pid)
 {
 	int		status;
 	pid_t	pid;

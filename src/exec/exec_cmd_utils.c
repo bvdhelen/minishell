@@ -12,7 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-extern char	**environ;
 extern int	g_exit_status;
 
 /*Función para concatenar la ruta con el comando*/

@@ -12,7 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-extern char	**environ;
 extern int	g_exit_status;
 
 /*Función para buscar rutas absolutas o relativas*/
@@ -80,8 +79,6 @@ void	execute_command_direct(t_cmd *cmd, char **envp)
 }
 
 /*Función principal para ejecutar un comando*/
-//if (cmd->is_builtin)
-//	return (execute_builtin(cmd, envp));
 //printf("[DEBUG] Entrando en execute_command()\n");
 //printf("[DEBUG] Estoy en el hijo (PID: %d)\n", getpid());
 //printf("[DEBUG] Padre (PID: %d), esperando al hijo...\n", getpid());
@@ -91,6 +88,8 @@ int	execute_command(t_cmd *cmd, char **envp)
 	pid_t	pid;
 	int		status;
 
+	//if (cmd->is_builtin)
+	//	return (execute_builtin(cmd, envp));
 	pid = fork();
 	if (pid == -1)
 		error_exit("fork error", 1);

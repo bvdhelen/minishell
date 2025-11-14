@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joperez2 <joperez2@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:04:19 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/14 13:07:00 by joperez2         ###   ########.fr       */
+/*   Updated: 2025/11/14 13:41:40 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <ctype.h>
 # include <stdio.h>
+# include <limits.h>
 # include <errno.h>
 # include <unistd.h>
 # include <stdlib.h>
@@ -121,6 +122,7 @@ char	*expand_word(const char *in, const char *meta,
 /* EXECUTION */
 
 /* error_exit.c */
+
 void	error_exit(const char *msg, int code);
 
 /* exec_cmd.c */
@@ -132,6 +134,7 @@ void	execute_command_direct(t_cmd *cmd, char **envp);
 int		execute_command(t_cmd *cmd, char **envp);
 
 /* exec_cmd_utils.c */
+
 char	*join_paths(const char *folder, const char *cmd);
 char	*search_in_paths(char **paths, char *cmd);
 char	*get_cmd_path(char *cmd, char **envp);
@@ -140,16 +143,22 @@ void	free_paths(char **paths);
 
 /* exec_pipe.c */
 
+int		handle_middle_cmd(t_cmd *cmd, int input_fd, char **envp);
+pid_t	handle_last_cmd(t_cmd *cmd, int input_fd, char **envp);
+void	wait_all(pid_t last_pid);
 int		execute_pipeline(t_cmd *cmd_list, char **envp);
 
-/* builtins FALTAN */
+/* builtins EN ELLO */
+
+int	execute_builtin(t_cmd *cmd, char **envp);
 
 int		ft_echo(char **argv);
-int		ft_cd(char **argv);
 int		ft_pwd(char **argv);
+int		ft_env(char **envp);
+
+int		ft_cd(char **argv);
 int		ft_export(char **argv, char **envp);
 int		ft_unset(char **argv, char **envp);
-int		ft_env(char **envp);
 int		ft_exit(char **argv);
 
 #endif
