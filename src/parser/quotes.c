@@ -2,9 +2,12 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   quotes.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
+/*                                                    +:+ +:+        
+	+:+     */
+/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+      
+	+#+        */
+/*                                                +#+#+#+#+#+  
+	+#+           */
 /*   Created: 2025/10/22 15:10:13 by eldiaz-c          #+#    #+#             */
 /*   Updated: 2025/10/22 15:10:13 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
@@ -12,150 +15,105 @@
 
 #include "../../includes/minishell.h"
 
-/* longitud del token sin contar comillas */
-static int	get_token_len(const char *s, int i)
+static void	copy_quoted(const char *s, int *i, char *w, int *pos)
 {
-	int		len;
 	char	q;
 
-	while (s[i] && isspace((unsigned char)s[i]))
-		i++;
-	len = 0;
-	while (s[i] && !isspace((unsigned char)s[i]))
+	q = s[*i];
+	(*i)++;
+	while (s[*i] && s[*i] != q)
 	{
-		if (s[i] == '\'' || s[i] == '"')
-		{
-			q = s[i++];
-			while (s[i] && s[i] != q)
-			{
-				len++;
-				i++;
-			}
-			if (s[i])
-				i++;
-		}
-		else
-		{
-			len++;
-			i++;
-		}
+		w[*pos] = s[*i];
+		(*pos)++;
+		(*i)++;
 	}
-	return (len);
+	if (s[*i])
+		(*i)++;
 }
 
-/* extrae el token (concatena trozos y quita comillas) */
-static char	*extract_shell_word(const char *s, int i)
+static void	copy_token(const char *s, int *i, char *w)
 {
-	int		len;
-	char	*word;
-	int		pos;
-	char	q;
+	int	pos;
 
-	while (s[i] && isspace((unsigned char)s[i]))
-		i++;
-	len = get_token_len(s, i);
-	word = malloc((size_t) len + 1);
-	if (!word)
-		return (NULL);
 	pos = 0;
-	while (s[i] && !isspace((unsigned char)s[i]))
+	while (s[*i] && !isspace((unsigned char)s[*i]))
 	{
-		if (s[i] == '\'' || s[i] == '"')
-		{
-			q = s[i++];
-			while (s[i] && s[i] != q)
-				word[pos++] = s[i++];
-			if (s[i])
-				i++;
-		}
+		if (s[*i] == '\'' || s[*i] == '"')
+			copy_quoted(s, i, w, &pos);
 		else
-			word[pos++] = s[i++];
+		{
+			w[pos] = s[*i];
+			pos++;
+			(*i)++;
+		}
 	}
-	word[pos] = '\0';
-	return (word);
+	w[pos] = '\0';
 }
 
-/* cuenta tokens respetando comillas */
-static int	count_shell_words(const char *s)
+static int	ensure_cap(char ***arr, int *cap, int needed)
+{
+	char	**new_arr;
+	int		i;
+
+	if (needed <= *cap)
+		return (1);
+	if (*cap == 0)
+		*cap = 4;
+	while (*cap < needed)
+		*cap *= 2;
+	new_arr = malloc(sizeof(char *) * (*cap));
+	if (!new_arr)
+		return (0);
+	i = 0;
+	while (i < needed - 1)
+	{
+		new_arr[i] = (*arr)[i];
+		i++;
+	}
+	free(*arr);
+	*arr = new_arr;
+	return (1);
+}
+
+static int	split_loop(const char *s, char ***res, int *cap, int *count)
 {
 	int		i;
-	int		count;
-	char	q;
+	char	*word;
 
 	i = 0;
-	count = 0;
 	while (s[i])
 	{
 		while (s[i] && isspace((unsigned char)s[i]))
 			i++;
 		if (!s[i])
 			break ;
-		count++;
-		while (s[i] && !isspace((unsigned char)s[i]))
-		{
-			if (s[i] == '\'' || s[i] == '"')
-			{
-				q = s[i++];
-				while (s[i] && s[i] != q)
-					i++;
-				if (s[i])
-					i++;
-			}
-			else
-				i++;
-		}
+		if (!ensure_cap(res, cap, *count + 1))
+			return (0);
+		word = malloc(strlen(s + i) + 1);
+		if (!word)
+			return (0);
+		copy_token(s, &i, word);
+		(*res)[*count] = word;
+		(*count)++;
 	}
-	return (count);
+	return (1);
 }
 
-/* avanza i hasta el final del token actual (incluye comillas) */
-static int	advance_token_end(const char *s, int i)
-{
-	char	q;
-
-	while (s[i] && !isspace((unsigned char)s[i]))
-	{
-		if (s[i] == '\'' || s[i] == '"')
-		{
-			q = s[i++];
-			while (s[i] && s[i] != q)
-				i++;
-			if (s[i])
-				i++;
-		}
-		else
-			i++;
-	}
-	return (i);
-}
-
-/* split público con comillas (concatena segmentos) */
 char	**ft_split_with_quotes(const char *s)
 {
-	char	**result;
-	char	*word;
-	int		words;
-	int		i;
-	int		j;
+	char	**res;
+	int		cap;
+	int		count;
 
 	if (!s)
 		return (NULL);
-	words = count_shell_words(s);
-	result = malloc(sizeof(char *) * (words + 1));
-	if (!result)
-		return (NULL);
-	i = 0;
-	j = 0;
-	while (j < words)
-	{
-		while (s[i] && isspace((unsigned char)s[i]))
-			i++;
-		word = extract_shell_word(s, i);
-		if (!word)
-			return (free_split(result, j));
-		result[j++] = word;
-		i = advance_token_end(s, i);
-	}
-	result[j] = NULL;
-	return (result);
+	res = NULL;
+	cap = 0;
+	count = 0;
+	if (!split_loop(s, &res, &cap, &count))
+		return (free_split(res, count));
+	if (!res)
+		return (malloc(sizeof(char *)));
+	res[count] = NULL;
+	return (res);
 }

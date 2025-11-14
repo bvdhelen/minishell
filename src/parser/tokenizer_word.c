@@ -3,89 +3,76 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer_word.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: joperez2 <joperez2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:07:05 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/10/29 14:30:57 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/14 13:23:16 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int	append_repeat(char **mbuf, size_t *mlen,
-			size_t *mcap, char tag, size_t n)
+static void	init_builder(t_wbuild *b)
+{
+	b->buf = NULL;
+	b->len = 0;
+	b->cap = 0;
+	b->mbuf = NULL;
+	b->mlen = 0;
+	b->mcap = 0;
+}
+
+static int	append_quoted(const char *line, size_t start,
+		size_t end, t_wbuild *b)
 {
 	size_t	k;
 
-	k = 0;
-	while (k < n)
+	k = start;
+	while (k < end)
 	{
-		if (!buf_append_char(mbuf, mlen, mcap, tag))
+		if (!buf_append_char(&b->buf, &b->len, &b->cap, line[k]))
 			return (0);
 		k++;
 	}
 	return (1);
 }
 
-static int	handle_single_quote(const char *line, size_t *i,
-		char **buf, size_t *len, size_t *cap,
-		char **mbuf, size_t *mlen, size_t *mcap, int *err)
+static int	handle_quote(const char *line, size_t *i, t_wbuild *b, int *err)
 {
 	size_t	start;
+	char	q;
+	char	tag;
 
+	q = line[*i];
+	tag = 'A';
+	if (q == '\'')
+		tag = 'S';
 	(*i)++;
 	start = *i;
-	while (line[*i] && line[*i] != '\'')
+	while (line[*i] && line[*i] != q)
 		(*i)++;
 	if (!line[*i])
 	{
 		*err = 1;
 		return (0);
 	}
-	if (!buf_append_chars(buf, len, cap, line + start, *i - start))
+	if (!append_quoted(line, start, *i, b))
 		return (0);
-	if (!append_repeat(mbuf, mlen, mcap, 'S', *i - start))
-		return (0);
-	(*i)++;
-	return (1);
-}
-
-static int	handle_double_quote(const char *line, size_t *i,
-		char **buf, size_t *len, size_t *cap,
-		char **mbuf, size_t *mlen, size_t *mcap, int *err)
-{
-	size_t	start;
-
-	(*i)++;
-	start = *i;
-	while (line[*i] && line[*i] != '"')
-		(*i)++;
-	if (!line[*i])
-	{
-		*err = 1;
-		return (0);
-	}
-	if (!buf_append_chars(buf, len, cap, line + start, *i - start))
-		return (0);
-	if (!append_repeat(mbuf, mlen, mcap, 'A', *i - start))
+	if (!append_repeat(b, tag, *i - start))
 		return (0);
 	(*i)++;
 	return (1);
 }
 
-static int	process_word_char(const char *line, size_t *i,
-		char **buf, size_t *len, size_t *cap,
-		char **mbuf, size_t *mlen, size_t *mcap, int *err)
+static int	process_word_char(const char *line, size_t *i, t_wbuild *b,
+		int *err)
 {
-	if (line[*i] == '\'')
-		return (handle_single_quote(line, i, buf, len,
-				cap, mbuf, mlen, mcap, err));
-	if (line[*i] == '"')
-		return (handle_double_quote(line, i, buf, len,
-				cap, mbuf, mlen, mcap, err));
-	if (!buf_append_char(buf, len, cap, line[*i]))
+	(void)err;
+	if (line[*i] == '\'' || line[*i] == '"')
+		return (handle_quote(line, i, b, err));
+	if (!buf_append_char(&b->buf, &b->len, &b->cap, line[*i]))
 		return (0);
-	if (!buf_append_char(mbuf, mlen, mcap, 'A'))
+	if (!buf_append_char(&b->mbuf, &b->mlen, &b->mcap, 'A'))
 		return (0);
 	(*i)++;
 	return (1);
@@ -93,40 +80,18 @@ static int	process_word_char(const char *line, size_t *i,
 
 char	*read_word(const char *line, size_t *i, int *err, char **out_meta)
 {
-	char	*buf;
-	size_t	cap;
-	size_t	len;
-	char	*mbuf;
-	size_t	mcap;
-	size_t	mlen;
+	t_wbuild	b;
 
-	buf = NULL;
-	cap = 0;
-	len = 0;
-	mbuf = NULL;
-	mcap = 0;
-	mlen = 0;
+	init_builder(&b);
 	while (line[*i] && !isspace((unsigned char)line[*i]) && line[*i] != '|')
 	{
-		if (!process_word_char(line, i, &buf, &len,
-				&cap, &mbuf, &mlen, &mcap, err) || *err)
+		if (!process_word_char(line, i, &b, err) || *err)
 		{
-			free(buf);
-			free(mbuf);
+			free(b.buf);
+			free(b.mbuf);
 			return (NULL);
 		}
 	}
-	if (!buf)
-	{
-		buf = ft_strndup("", 0);
-		mbuf = ft_strndup("", 0);
-		if (!buf || !mbuf)
-		{
-			free(buf);
-			free(mbuf);
-			return (NULL);
-		}
-	}
-	*out_meta = mbuf;
-	return (buf);
+	*out_meta = b.mbuf;
+	return (b.buf);
 }

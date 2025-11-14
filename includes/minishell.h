@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: joperez2 <joperez2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:04:19 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/13 22:58:35 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/14 13:07:00 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,27 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }	t_cmd;
 
+typedef struct s_expand
+{
+	char		*out;
+	size_t		len;
+	size_t		cap;
+	size_t		i;
+	const char	*meta;
+	char		**envp;
+	int			last;
+}				t_expand;
+
+typedef struct s_wbuild
+{
+	char	*buf;
+	size_t	len;
+	size_t	cap;
+	char	*mbuf;
+	size_t	mlen;
+	size_t	mcap;
+}	t_wbuild;
+
 /* TOKENIZER / PARSER API */
 t_token	*tokenize(const char *line);
 void	free_tokens(t_token *tok);
@@ -66,8 +87,7 @@ char	**free_split(char **arr, int filled);
 /* tokenizer buffer helpers */
 char	*ft_strndup(const char *s, size_t n);
 int		buf_ensure(char **buf, size_t *cap, size_t need);
-int		buf_append_chars(char **buf, size_t *len,
-			size_t *cap, const char *s, size_t n);
+int		buf_append_chars(char **buf, size_t *len, size_t *cap, const char *s);
 int		buf_append_char(char **buf, size_t *len, size_t *cap, char c);
 
 /* tokenizer_word.c */

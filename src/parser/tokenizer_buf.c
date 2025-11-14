@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer_buf.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: joperez2 <joperez2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:08:26 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/10/29 14:27:46 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/14 13:03:43 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,10 @@ int	buf_ensure(char **buf, size_t *cap, size_t need)
 
 	if (*cap >= need)
 		return (1);
-	nc = *cap ? *cap * 2 : 64;
+	if (*cap != 0)
+		nc = (*cap) * 2;
+	else
+		nc = 64;
 	while (nc < need)
 		nc *= 2;
 	nb = realloc(*buf, nc);
@@ -42,9 +45,11 @@ int	buf_ensure(char **buf, size_t *cap, size_t need)
 	return (1);
 }
 
-int	buf_append_chars(char **buf, size_t *len, size_t *cap,
-				const char *s, size_t n)
+int	buf_append_chars(char **buf, size_t *len, size_t *cap, const char *s)
 {
+	size_t	n;
+
+	n = strlen(s);
 	if (!buf_ensure(buf, cap, *len + n + 1))
 		return (0);
 	if (n)
@@ -56,5 +61,5 @@ int	buf_append_chars(char **buf, size_t *len, size_t *cap,
 
 int	buf_append_char(char **buf, size_t *len, size_t *cap, char c)
 {
-	return (buf_append_chars(buf, len, cap, &c, 1));
+	return (buf_append_chars(buf, len, cap, (char [2]){c, '\0'}));
 }

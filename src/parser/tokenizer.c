@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: joperez2 <joperez2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:06:52 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/10/29 14:15:49 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/14 11:42:50 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,11 @@ static int	process_step(const char *line, size_t *i, t_token **head)
 
 	r = handle_pipe(line, i, head);
 	if (r != 0)
-		return (r < 0 ? -1 : 1);
+	{
+		if (r < 0)
+			return (-1);
+		return (1);
+	}
 	err = 0;
 	m = NULL;
 	w = read_word(line, i, &err, &m);

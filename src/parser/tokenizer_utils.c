@@ -3,14 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: joperez2 <joperez2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:10:00 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/10/29 14:10:54 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/14 13:06:36 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+static const char	*safe_val(char *v)
+{
+	if (v)
+		return (v);
+	return ("(null)");
+}
 
 void	free_tokens(t_token *tok)
 {
@@ -33,19 +40,19 @@ void	print_tokens(t_token *tok)
 	while (tok)
 	{
 		if (tok->type == T_WORD)
-			printf("[WORD] '%s'\n", tok->value ? tok->value : "(null)");
+			printf("[WORD] '%s'\n", safe_val(tok->value));
 		else if (tok->type == T_PIPE)
-			printf("[PIPE] '%s'\n", tok->value ? tok->value : "(null)");
+			printf("[PIPE] '%s'\n", safe_val(tok->value));
 		else if (tok->type == T_REDIR_IN)
-			printf("[<] '%s'\n", tok->value ? tok->value : "(null)");
+			printf("[<] '%s'\n", safe_val(tok->value));
 		else if (tok->type == T_REDIR_OUT)
-			printf("[>] '%s'\n", tok->value ? tok->value : "(null)");
+			printf("[>] '%s'\n", safe_val(tok->value));
 		else if (tok->type == T_REDIR_APPEND)
-			printf("[>>] '%s'\n", tok->value ? tok->value : "(null)");
+			printf("[>>] '%s'\n", safe_val(tok->value));
 		else if (tok->type == T_HEREDOC)
-			printf("[<<] '%s'\n", tok->value ? tok->value : "(null)");
+			printf("[<<] '%s'\n", safe_val(tok->value));
 		else
-			printf("[OTHER] '%s'\n", tok->value ? tok->value : "(null)");
+			printf("[OTHER] '%s'\n", safe_val(tok->value));
 		tok = tok->next;
 	}
 }
@@ -58,10 +65,7 @@ char	**free_split(char **arr, int filled)
 		return (NULL);
 	k = 0;
 	while (k < filled)
-	{
-		free(arr[k]);
-		k++;
-	}
+		free(arr[k++]);
 	free(arr);
 	return (NULL);
 }

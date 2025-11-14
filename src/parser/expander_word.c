@@ -3,92 +3,91 @@
 /*                                                        :::      ::::::::   */
 /*   expander_word.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: joperez2 <joperez2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 14:31:21 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/10/29 14:32:06 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/14 11:41:41 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int	append_status(char **out, size_t *len,
-			size_t *cap, size_t *i, int last)
+static int	append_status(t_expand *e)
 {
 	char	buf[16];
 	int		n;
 
-	n = snprintf(buf, sizeof(buf), "%d", last);
+	n = snprintf(buf, sizeof(buf), "%d", e->last);
 	if (n < 0)
 		return (0);
-	if (!buf_append_chars(out, len, cap, buf, (size_t)n))
+	if (!buf_append_chars(&e->out, &e->len, &e->cap, buf, (size_t)n))
 		return (0);
-	*i += 2;
+	e->i += 2;
 	return (1);
 }
 
-static int	append_var(const char *in, char **out, size_t *len, size_t *cap,
-				size_t *i, char **envp)
+static int	append_var(const char *in, t_expand *e)
 {
 	size_t	j;
 	char	*name;
 	char	*val;
 
-	j = *i + 1;
+	j = e->i + 1;
 	if (!is_var_first((unsigned char)in[j]))
-		return (buf_append_chars(out, len, cap, in + (*i)++, 1));
+		return (buf_append_chars(&e->out, &e->len, &e->cap, in + e->i++, 1));
 	while (is_var_next((unsigned char)in[j]))
 		j++;
-	name = ft_strndup(in + *i + 1, j - (*i + 1));
+	name = ft_strndup(in + e->i + 1, j - (e->i + 1));
 	if (!name)
 		return (0);
-	val = lookup_env(name, envp);
+	val = lookup_env(name, e->envp);
 	free(name);
-	if (!val || !buf_append_chars(out, len, cap, val, strlen(val)))
+	if (!val || !buf_append_chars(&e->out, &e->len, &e->cap, val, strlen(val)))
 		return (free(val), 0);
 	free(val);
-	*i = j;
+	e->i = j;
 	return (1);
 }
 
-static int	append_byte(const char *in, char **out, size_t *len,
-				size_t *cap, size_t *i)
+static int	append_byte(const char *in, t_expand *e)
 {
-	if (!buf_append_chars(out, len, cap, in + *i, 1))
+	if (!buf_append_chars(&e->out, &e->len, &e->cap, in + e->i, 1))
 		return (0);
-	(*i)++;
+	e->i++;
 	return (1);
 }
 
-static int	process_chunk(const char *in, const char *meta, char **out,
-		size_t *len, size_t *cap, size_t *i, char **envp, int last)
+static int	process_chunk(const char *in, t_expand *e)
 {
-	if (meta && meta[*i] == 'S')
-		return (buf_append_chars(out, len, cap, in + (*i)++, 1));
-	if (in[*i] == '$' && in[*i + 1] == '?')
-		return (append_status(out, len, cap, i, last));
-	if (in[*i] == '$')
-		return (append_var(in, out, len, cap, i, envp));
-	return (append_byte(in, out, len, cap, i));
+	if (e->meta && e->meta[e->i] == 'S')
+		return (buf_append_chars(&e->out, &e->len, &e->cap, in + e->i++, 1));
+	if (in[e->i] == '$' && in[e->i + 1] == '?')
+		return (append_status(e));
+	if (in[e->i] == '$')
+		return (append_var(in, e));
+	return (append_byte(in, e));
 }
 
 char	*expand_word(const char *in, const char *meta, char **envp, int last)
 {
-	char	*out;
-	size_t	len;
-	size_t	cap;
-	size_t	i;
+	t_expand	e;
 
-	out = NULL;
-	len = 0;
-	cap = 0;
-	i = 0;
-	while (in[i])
+	e.out = NULL;
+	e.len = 0;
+	e.cap = 0;
+	e.i = 0;
+	e.meta = meta;
+	e.envp = envp;
+	e.last = last;
+	while (in[e.i])
 	{
-		if (!process_chunk(in, meta, &out, &len, &cap, &i, envp, last))
-			return (free(out), NULL);
+		if (!process_chunk(in, &e))
+		{
+			free(e.out);
+			return (NULL);
+		}
 	}
-	if (!out)
-		out = ft_strndup("", 0);
-	return (out);
+	if (!e.out)
+		e.out = ft_strndup("", 0);
+	return (e.out);
 }
