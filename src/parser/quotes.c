@@ -113,7 +113,13 @@ char	**ft_split_with_quotes(const char *s)
 	if (!split_loop(s, &res, &cap, &count))
 		return (free_split(res, count));
 	if (!res)
-		return (malloc(sizeof(char *)));
+	{
+		res = malloc(sizeof(char *));
+		if (!res)
+			return (NULL);
+		res[0] = NULL;
+		return (res);
+	}
 	res[count] = NULL;
 	return (res);
 }

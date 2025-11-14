@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer_buf.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joperez2 <joperez2@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:08:26 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/14 13:03:43 by joperez2         ###   ########.fr       */
+/*   Updated: 2025/11/14 20:04:21 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,5 +61,9 @@ int	buf_append_chars(char **buf, size_t *len, size_t *cap, const char *s)
 
 int	buf_append_char(char **buf, size_t *len, size_t *cap, char c)
 {
-	return (buf_append_chars(buf, len, cap, (char [2]){c, '\0'}));
+	char	tmp[2];
+
+	tmp[0] = c;
+	tmp[1] = '\0';
+	return (buf_append_chars(buf, len, cap, tmp));
 }

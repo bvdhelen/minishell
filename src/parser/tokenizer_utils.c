@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joperez2 <joperez2@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:10:00 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/14 13:06:36 by joperez2         ###   ########.fr       */
+/*   Updated: 2025/11/14 19:59:37 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,3 +69,4 @@ char	**free_split(char **arr, int filled)
 	free(arr);
 	return (NULL);
 }
+

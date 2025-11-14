@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander_word.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joperez2 <joperez2@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 14:31:21 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/14 11:41:41 by joperez2         ###   ########.fr       */
+/*   Updated: 2025/11/14 19:57:35 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static int	append_status(t_expand *e)
 	n = snprintf(buf, sizeof(buf), "%d", e->last);
 	if (n < 0)
 		return (0);
-	if (!buf_append_chars(&e->out, &e->len, &e->cap, buf, (size_t)n))
+	if (!buf_append_chars(&e->out, &e->len, &e->cap, buf))
 		return (0);
 	e->i += 2;
 	return (1);
@@ -34,7 +34,12 @@ static int	append_var(const char *in, t_expand *e)
 
 	j = e->i + 1;
 	if (!is_var_first((unsigned char)in[j]))
-		return (buf_append_chars(&e->out, &e->len, &e->cap, in + e->i++, 1));
+	{
+		if (!buf_append_char(&e->out, &e->len, &e->cap, in[e->i]))
+			return (0);
+		e->i++;
+		return (1);
+	}
 	while (is_var_next((unsigned char)in[j]))
 		j++;
 	name = ft_strndup(in + e->i + 1, j - (e->i + 1));
@@ -42,7 +47,9 @@ static int	append_var(const char *in, t_expand *e)
 		return (0);
 	val = lookup_env(name, e->envp);
 	free(name);
-	if (!val || !buf_append_chars(&e->out, &e->len, &e->cap, val, strlen(val)))
+	if (!val)
+		return (0);
+	if (!buf_append_chars(&e->out, &e->len, &e->cap, val))
 		return (free(val), 0);
 	free(val);
 	e->i = j;
@@ -51,7 +58,7 @@ static int	append_var(const char *in, t_expand *e)
 
 static int	append_byte(const char *in, t_expand *e)
 {
-	if (!buf_append_chars(&e->out, &e->len, &e->cap, in + e->i, 1))
+	if (!buf_append_char(&e->out, &e->len, &e->cap, in[e->i]))
 		return (0);
 	e->i++;
 	return (1);
@@ -60,8 +67,14 @@ static int	append_byte(const char *in, t_expand *e)
 static int	process_chunk(const char *in, t_expand *e)
 {
 	if (e->meta && e->meta[e->i] == 'S')
-		return (buf_append_chars(&e->out, &e->len, &e->cap, in + e->i++, 1));
-	if (in[e->i] == '$' && in[e->i + 1] == '?')
+	{
+		if (!buf_append_char(&e->out, &e->len, &e->cap, in[e->i]))
+			return (0);
+		e->i++;
+		return (1);
+	}
+	if (in[e->i] == '$' && in[e->i + 1]
+		&& in[e->i + 1] == '?')
 		return (append_status(e));
 	if (in[e->i] == '$')
 		return (append_var(in, e));

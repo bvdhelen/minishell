@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:04:19 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/14 13:41:40 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/14 20:02:42 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 
 extern char	**environ;
 extern int	g_exit_status;
+
+/* ---------------- TOKENIZER / PARSER TYPES ---------------- */
 
 typedef enum e_tok_type
 {
@@ -79,7 +81,8 @@ typedef struct s_wbuild
 	size_t	mcap;
 }	t_wbuild;
 
-/* TOKENIZER / PARSER API */
+/* ---------------- TOKENIZER / PARSER API ---------------- */
+
 t_token	*tokenize(const char *line);
 void	free_tokens(t_token *tok);
 void	print_tokens(t_token *tok);
@@ -109,7 +112,8 @@ int		push_arg(t_cmd *cmd, const char *word);
 /* parser_debug.c */
 void	print_cmds(t_cmd *cmd);
 
-/* EXPANDER */
+/* ---------------- EXPANDER ---------------- */
+
 int		expand_tokens(t_token *head, char **envp, int last_status);
 int		is_var_first(int c);
 int		is_var_next(int c);
@@ -117,16 +121,12 @@ char	*lookup_env(const char *name, char **envp);
 char	*expand_word(const char *in, const char *meta,
 			char **envp, int last_status);
 
-// ___________________________________________________ //
-
-/* EXECUTION */
+/* ---------------- EXECUTION ---------------- */
 
 /* error_exit.c */
-
 void	error_exit(const char *msg, int code);
 
 /* exec_cmd.c */
-
 int		is_absolute_path(const char *cmd);
 char	*check_direct_path(const char *cmd);
 void	check_access(char *path);
@@ -134,7 +134,6 @@ void	execute_command_direct(t_cmd *cmd, char **envp);
 int		execute_command(t_cmd *cmd, char **envp);
 
 /* exec_cmd_utils.c */
-
 char	*join_paths(const char *folder, const char *cmd);
 char	*search_in_paths(char **paths, char *cmd);
 char	*get_cmd_path(char *cmd, char **envp);
@@ -142,15 +141,13 @@ char	**free_memory(char **result, int count);
 void	free_paths(char **paths);
 
 /* exec_pipe.c */
-
 int		handle_middle_cmd(t_cmd *cmd, int input_fd, char **envp);
 pid_t	handle_last_cmd(t_cmd *cmd, int input_fd, char **envp);
 void	wait_all(pid_t last_pid);
 int		execute_pipeline(t_cmd *cmd_list, char **envp);
 
-/* builtins EN ELLO */
-
-int	execute_builtin(t_cmd *cmd, char **envp);
+/* builtins */
+int		execute_builtin(t_cmd *cmd, char **envp);
 
 int		ft_echo(char **argv);
 int		ft_pwd(char **argv);
