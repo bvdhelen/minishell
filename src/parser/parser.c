@@ -6,7 +6,7 @@
 /*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 14:19:13 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/10/29 14:19:16 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/15 21:58:31 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ static t_cmd	*new_cmd(void)
 	cmd->argv = NULL;
 	cmd->infile = -1;
 	cmd->outfile = -1;
-	cmd->is_builtin = 0;
 	cmd->next = NULL;
 	return (cmd);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:04:19 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/14 20:02:42 by joperez2         ###   ########.fr       */
+/*   Updated: 2025/11/15 22:00:02 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ typedef struct s_cmd
 	char			**argv;
 	int				infile;
 	int				outfile;
-	int				is_builtin;
 	struct s_cmd	*next;
 }	t_cmd;
 
@@ -147,7 +146,10 @@ void	wait_all(pid_t last_pid);
 int		execute_pipeline(t_cmd *cmd_list, char **envp);
 
 /* builtins */
-int		execute_builtin(t_cmd *cmd, char **envp);
+int		is_child_builtin(char *cmd);
+int		is_parent_builtin(char *cmd);
+int		execute_child_builtin(t_cmd *cmd, char **envp);
+int		execute_parent_builtin(t_cmd *cmd, char **envp);
 
 int		ft_echo(char **argv);
 int		ft_pwd(char **argv);

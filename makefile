@@ -47,6 +47,8 @@ SRC = \
 	src/exec/exec_cmd.c \
 	src/exec/exec_pipe.c \
 	src/exec/exec_cmd_utils.c \
+	src/exec/exec_builtin.c \
+	src/exec/builtins/child_builtins.c \
 
 
 OBJS = $(SRC:.c=.o)

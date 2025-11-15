@@ -88,15 +88,24 @@ int	execute_command(t_cmd *cmd, char **envp)
 	pid_t	pid;
 	int		status;
 
-	//if (cmd->is_builtin)
-	//	return (execute_builtin(cmd, envp));
+	//if (is_parent_builtin(cmd->argv[0]))
+	//	return (execute_parent_builtin(cmd, envp));
+	if (is_child_builtin(cmd->argv[0]))
+	{
+		pid = fork();
+		if (pid == -1)
+			error_exit("fork", 1);
+		if (pid == 0)
+			exit(execute_child_builtin(cmd, envp));
+		waitpid(pid, &status, 0);
+		return (WEXITSTATUS(status));
+	}
 	pid = fork();
 	if (pid == -1)
-		error_exit("fork error", 1);
+		error_exit("fork", 1);
 	if (pid == 0)
 		execute_command_direct(cmd, envp);
-	else
-		waitpid(pid, &status, 0);
+	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	else

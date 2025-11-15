@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer_pipe.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:06:43 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/14 19:59:19 by joperez2         ###   ########.fr       */
+/*   Updated: 2025/11/15 11:26:09 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,3 @@ int	handle_pipe(const char *line, size_t *i, t_token **head)
 	(*i)++;
 	return (1);
 }
-
