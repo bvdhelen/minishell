@@ -29,7 +29,7 @@ static int	is_n_flag(char *arg)
 Si se pasa -n, no añade salto de línea al final
 Si no hay argumentos, imprime solo \n
 echo siempre devuelve el código de salida 0*/
-int ft_echo(char **argv)
+int	ft_echo(char **argv)
 {
 	int	i;
 	int	newline;
@@ -55,23 +55,23 @@ int ft_echo(char **argv)
 
 /*Función que imprime el cwd usando getcwd(NULL, 0)
 Y devuelve el código de salida 0 en éxito, 1 en fallo*/
+//ft_putendl_fd(cwd, STDOUT_FILENO);
 int	ft_pwd(char **argv)
 {
-	(void)argv;
 	char	*cwd;
-
+	(void)argv;
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 		error_exit("pwd", 1);
 	ft_putstr_fd(cwd, STDOUT_FILENO);
 	ft_putstr_fd("\n", STDOUT_FILENO);
-	//ft_putendl_fd(cwd, STDOUT_FILENO);
 	free(cwd);
 	return (0);
 }
 
 /*Función que imprime cada entry de envp que contenga =
 Y devuelve el código de salida 0*/
+//ft_putendl_fd(envp[i], STDOUT_FILENO);
 int	ft_env(char **envp)
 {
 	int	i;
@@ -83,7 +83,6 @@ int	ft_env(char **envp)
 	{
 		if (ft_strchr(envp[i], '='))
 		{
-			//ft_putendl_fd(envp[i], STDOUT_FILENO);
 			ft_putstr_fd(envp[i], STDOUT_FILENO);
 			ft_putstr_fd("\n", STDOUT_FILENO);
 		}

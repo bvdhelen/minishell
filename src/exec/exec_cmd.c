@@ -88,8 +88,8 @@ int	execute_command(t_cmd *cmd, char **envp)
 	pid_t	pid;
 	int		status;
 
-	//if (is_parent_builtin(cmd->argv[0]))
-	//	return (execute_parent_builtin(cmd, envp));
+	if (is_parent_builtin(cmd->argv[0]))
+		return (execute_parent_builtin(cmd, envp));
 	if (is_child_builtin(cmd->argv[0]))
 	{
 		pid = fork();
