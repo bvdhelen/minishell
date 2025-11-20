@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-extern int	g_exit_status;
+//extern int	g_exit_status;
 
 /*Función para buscar rutas absolutas o relativas*/
 int	is_absolute_path(const char *cmd)
@@ -61,7 +61,7 @@ void	execute_command_direct(t_cmd *cmd, char **envp)
 		path = get_cmd_path(cmd->argv[0], envp);
 	if (!path)
 	{
-		fprintf(stderr, "\033[0;35mminishell:\033[0m"
+		fprintf(stderr, "\033[0;35mminishell: \033[0m"
 			"%s: command not found\n", cmd->argv[0]);
 		exit(127);
 	}

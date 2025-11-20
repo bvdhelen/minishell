@@ -6,67 +6,13 @@
 /*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:02:36 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/20 12:35:16 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/20 14:56:03 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
 int	g_exit_status = 0;
-
-char	**dup_envp(char **envp)
-{
-	int		i;
-	char	**new;
-
-	if (!envp)
-	{
-		new = malloc(sizeof(char *));
-		if (!new)
-			return (NULL);
-		new[0] = NULL;
-		return (new);
-	}
-	i = 0;
-	while (envp[i])
-		i++;
-	new = malloc(sizeof(char *) * (i + 1));
-	if (!new)
-		return (NULL);
-	i = 0;
-	while (envp[i])
-	{
-		new[i] = ft_strdup(envp[i]);
-		if (!new[i])
-		{
-			while (i > 0)
-			{
-				free(new[i]);
-				i--;
-			}
-			free(new);
-			return (NULL);
-		}
-		i++;
-	}
-	new[i] = NULL;
-	return (new);
-}
-
-void	free_envp(char **envp)
-{
-	int	i;
-
-	if (!envp)
-		return ;
-	i = 0;
-	while (envp[i])
-	{
-		free(envp[i]);
-		i++;
-	}
-	free(envp);
-}
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -75,8 +21,12 @@ int	main(int argc, char **argv, char **envp)
 	t_token	*tok;
 	t_cmd	*cmd_list;
 
-	(void)argc;
 	(void)argv;
+	if (argc != 1)
+	{
+		printf("Usage: \t\033[0;90m./minishell\033[0m\n");
+		return (1);
+	}
 	envp_copy = dup_envp(envp);
 	if (!envp_copy)
 		return (1);

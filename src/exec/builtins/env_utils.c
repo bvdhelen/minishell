@@ -14,7 +14,6 @@
 
 /*Busca el índice de KEY en envp (KEY sin '=')
 Devuelve -1 si no existe*/
-
 int	env_index(char **envp, const char *key)
 {
 	int		i;
