@@ -12,8 +12,8 @@
 
 #include "../../../includes/minishell.h"
 
-/* Busca el índice de KEY en envp (KEY sin '=')
-Devuelve -1 si no existe */
+/*Busca el índice de KEY en envp (KEY sin '=')
+Devuelve -1 si no existe*/
 
 int	env_index(char **envp, const char *key)
 {
@@ -34,7 +34,7 @@ int	env_index(char **envp, const char *key)
 	return (-1);
 }
 
-/* Función que construye "key=value" */
+/*Función que construye "key=value"*/
 static char	*join_keyvalue(const char *key, const char *value)
 {
 	char	*s;
@@ -60,8 +60,8 @@ static char	*join_keyvalue(const char *key, const char *value)
 	return (s);
 }
 
-/* Función que reemplaza o añade KEY=VALUE
-Devuelve el nuevo envp */
+/*Función que reemplaza o añade KEY=VALUE
+Devuelve el nuevo envp*/
 char	**env_set(char **envp, const char *key, const char *value)
 {
 	char	**new_env;
@@ -101,8 +101,8 @@ char	**env_set(char **envp, const char *key, const char *value)
 	return (new_env);
 }
 
-/* Función que elimina KEY
-Devuelve un nuevo envp */
+/*Función que elimina KEY
+Devuelve un nuevo envp*/
 char	**env_unset(char **envp, const char *key)
 {
 	char	**new_env;
@@ -135,8 +135,8 @@ char	**env_unset(char **envp, const char *key)
 	return (new_env);
 }
 
-/* Función que valida el identificador:
-Empieza por '_' o letra */
+/*Función que valida el identificador:
+Empieza por '_' o letra*/
 int	valid_identifier(const char *s)
 {
 	int	i;

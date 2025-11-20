@@ -83,20 +83,20 @@ void	execute_command_direct(t_cmd *cmd, char **envp)
 //printf("[DEBUG] Estoy en el hijo (PID: %d)\n", getpid());
 //printf("[DEBUG] Padre (PID: %d), esperando al hijo...\n", getpid());
 //printf("[DEBUG] Salgo de execute_command() con status %d\n", status);
-int	execute_command(t_cmd *cmd, char **envp)
+int	execute_command(t_cmd *cmd, char ***envp_addr)
 {
 	pid_t	pid;
 	int		status;
 
-	if (is_parent_builtin(cmd->argv[0]))
-		return (execute_parent_builtin(cmd, envp));
-	if (is_child_builtin(cmd->argv[0]))
+	if (is_parent_builtin(cmd->argv[0]) == 1)
+		return (execute_parent_builtin(cmd, envp_addr));
+	if (is_child_builtin(cmd->argv[0]) == 1)
 	{
 		pid = fork();
 		if (pid == -1)
 			error_exit("fork", 1);
 		if (pid == 0)
-			exit(execute_child_builtin(cmd, envp));
+			exit(execute_child_builtin(cmd, *envp_addr));
 		waitpid(pid, &status, 0);
 		return (WEXITSTATUS(status));
 	}
@@ -104,7 +104,7 @@ int	execute_command(t_cmd *cmd, char **envp)
 	if (pid == -1)
 		error_exit("fork", 1);
 	if (pid == 0)
-		execute_command_direct(cmd, envp);
+		execute_command_direct(cmd, *envp_addr);
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));

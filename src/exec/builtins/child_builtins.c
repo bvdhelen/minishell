@@ -59,6 +59,7 @@ Y devuelve el código de salida 0 en éxito, 1 en fallo*/
 int	ft_pwd(char **argv)
 {
 	char	*cwd;
+
 	(void)argv;
 	cwd = getcwd(NULL, 0);
 	if (!cwd)

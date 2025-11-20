@@ -90,7 +90,7 @@ void	wait_all(pid_t last_pid)
 
 /*Función para ejecutar una lista enlazada de comandos,
 conectándolos con pipes si hay más de uno*/
-int	execute_pipeline(t_cmd *cmd_list, char **envp)
+int	execute_pipeline(t_cmd *cmd_list, char ***envp_addr)
 {
 	t_cmd	*cmd;
 	int		input_fd;
@@ -102,10 +102,10 @@ int	execute_pipeline(t_cmd *cmd_list, char **envp)
 	cmd = cmd_list;
 	while (cmd->next)
 	{
-		input_fd = handle_middle_cmd(cmd, input_fd, envp);
+		input_fd = handle_middle_cmd(cmd, input_fd, *envp_addr);
 		cmd = cmd->next;
 	}
-	last_pid = handle_last_cmd(cmd, input_fd, envp);
+	last_pid = handle_last_cmd(cmd, input_fd, *envp_addr);
 	wait_all(last_pid);
 	return (g_exit_status);
 }
