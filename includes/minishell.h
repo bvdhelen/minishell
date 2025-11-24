@@ -6,7 +6,7 @@
 /*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:04:19 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/20 12:36:15 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/24 14:05:47 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,9 @@ char	*expand_word(const char *in, const char *meta,
 
 /* error_exit.c */
 void	error_exit(const char *msg, int code);
+
+char	**dup_envp(char **envp);
+void	free_envp(char **envp);
 
 /* exec_cmd.c */
 int		is_absolute_path(const char *cmd);

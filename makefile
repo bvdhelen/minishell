@@ -33,10 +33,10 @@ RESET = \033[0m
 SRC = \
     src/main.c \
 	src/error_exit.c \
+	src/init_envp.c \
 	src/parser/expander_word.c \
     src/parser/expander.c \
     src/parser/parser.c \
-	src/parser/parser_debug.c \
     src/parser/parser_utils.c \
     src/parser/quotes.c \
     src/parser/tokenizer.c \
