@@ -12,6 +12,58 @@
 
 #include "../../../includes/minishell.h"
 
+/*Función que duplica un envp (matriz de strings) en memoria nueva*/
+char	**dup_envp(char **envp)
+{
+	int		i;
+	char	**new;
+
+	if (!envp)
+	{
+		new = malloc(sizeof(char *));
+		if (!new)
+			return (NULL);
+		new[0] = NULL;
+		return (new);
+	}
+	i = 0;
+	while (envp[i])
+		i++;
+	new = malloc(sizeof(char *) * (i + 1));
+	if (!new)
+		return (NULL);
+	i = 0;
+	while (envp[i])
+	{
+		new[i] = ft_strdup(envp[i]);
+		if (!new[i])
+		{
+			while (i-- > 0)
+				free(new[i]);
+			free(new);
+			return (NULL);
+		}
+		i++;
+	}
+	new[i] = NULL;
+	return (new);
+}
+
+void	free_envp(char **envp)
+{
+	int	i;
+
+	if (!envp)
+		return ;
+	i = 0;
+	while (envp[i])
+	{
+		free(envp[i]);
+		i++;
+	}
+	free(envp);
+}
+
 /*Busca el índice de KEY en envp (KEY sin '=')
 Devuelve -1 si no existe*/
 int	env_index(char **envp, const char *key)
@@ -25,7 +77,8 @@ int	env_index(char **envp, const char *key)
 	i = 0;
 	while (envp[i])
 	{
-		if (ft_strlen(envp[i]) > key_len && envp[i][key_len] == '='
+		if (ft_strlen(envp[i]) > key_len
+			&& envp[i][key_len] == '='
 			&& ft_strncmp(envp[i], key, key_len) == 0)
 			return (i);
 		i++;
@@ -34,13 +87,15 @@ int	env_index(char **envp, const char *key)
 }
 
 /*Función que construye "key=value"*/
-static char	*join_keyvalue(const char *key, const char *value)
+char	*join_keyvalue(const char *key, const char *value)
 {
 	char	*s;
 	size_t	len;
 	size_t	key_len;
 	size_t	value_len;
 
+	if (!key)
+		return (NULL);
 	key_len = ft_strlen(key);
 	if (value)
 		value_len = ft_strlen(value);
@@ -69,6 +124,8 @@ char	**env_set(char **envp, const char *key, const char *value)
 	int		n;
 	int		i;
 
+	if (!key)
+		return (envp);
 	new_pair = join_keyvalue(key, value);
 	if (!new_pair)
 		return (envp);
@@ -79,9 +136,7 @@ char	**env_set(char **envp, const char *key, const char *value)
 		envp[idx] = new_pair;
 		return (envp);
 	}
-	n = 0;
-	while (envp && envp[n])
-		n++;
+	n = count_env(envp);
 	new_env = malloc(sizeof(char *) * (n + 2));
 	if (!new_env)
 	{
@@ -110,12 +165,12 @@ char	**env_unset(char **envp, const char *key)
 	int		i;
 	int		j;
 
-	idx = env_index(envp, key);
-	if (!envp || idx == -1)
+	if (!envp || !key)
 		return (envp);
-	n = 0;
-	while (envp[n])
-		n++;
+	idx = env_index(envp, key);
+	if (idx == -1)
+		return (envp);
+	n = count_env(envp);
 	new_env = malloc(sizeof(char *) * n);
 	if (!new_env)
 		return (envp);
@@ -140,7 +195,9 @@ int	valid_identifier(const char *s)
 {
 	int	i;
 
-	if (!s || (!ft_isalpha(s[0]) && s[0] != '_'))
+	if (!s)
+		return (0);
+	if (!ft_isalpha(s[0]) && s[0] != '_')
 		return (0);
 	i = 1;
 	while (s[i] && s[i] != '=')

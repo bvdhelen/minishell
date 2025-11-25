@@ -33,7 +33,6 @@ RESET = \033[0m
 SRC = \
     src/main.c \
 	src/error_exit.c \
-	src/init_envp.c \
 	src/parser/expander_word.c \
     src/parser/expander.c \
     src/parser/parser.c \
@@ -48,9 +47,10 @@ SRC = \
 	src/exec/exec_pipe.c \
 	src/exec/exec_cmd_utils.c \
 	src/exec/exec_builtin.c \
+	src/exec/builtins/ft_cd.c \
 	src/exec/builtins/env_utils.c \
+	src/exec/builtins/ft_export_unset.c \
 	src/exec/builtins/child_builtins.c \
-	src/exec/builtins/parent_builtins.c \
 
 
 OBJS = $(SRC:.c=.o)

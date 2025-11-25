@@ -6,7 +6,7 @@
 /*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:04:19 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/24 14:05:47 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/25 14:00:55 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,9 +124,6 @@ char	*expand_word(const char *in, const char *meta,
 /* error_exit.c */
 void	error_exit(const char *msg, int code);
 
-char	**dup_envp(char **envp);
-void	free_envp(char **envp);
-
 /* exec_cmd.c */
 int		is_absolute_path(const char *cmd);
 char	*check_direct_path(const char *cmd);
@@ -147,26 +144,42 @@ pid_t	handle_last_cmd(t_cmd *cmd, int input_fd, char **envp);
 void	wait_all(pid_t last_pid);
 int		execute_pipeline(t_cmd *cmd_list, char ***envp_addr);
 
-/* builtins */
+/* exec_builtin.c */
 int		is_child_builtin(char *cmd);
 int		is_parent_builtin(char *cmd);
 int		execute_child_builtin(t_cmd *cmd, char **envp);
 int		execute_parent_builtin(t_cmd *cmd, char ***envp_addr);
 
-/* env_utils */
-
-int		env_index(char **envp, const char *key);
-char	**env_set(char **envp, const char *key, const char *value);
-char	**env_unset(char **envp, const char *key);
-int		valid_identifier(const char *s);
-
+/* child_builtins.c */
 int		ft_echo(char **argv);
 int		ft_pwd(char **argv);
 int		ft_env(char **envp);
 
+/* ft_cd.c */
 int		ft_cd(char **argv, char ***envp_addr);
+
+/* ft_exit.c */
+int		ft_exit(char **argv);
+
+/* env_utils.c */
+char	**dup_envp(char **envp);
+void	free_envp(char **envp);
+int		env_index(char **envp, const char *key);
+char	*join_keyvalue(const char *key, const char *value);
+char	**env_set(char **envp, const char *key, const char *value);
+char	**env_unset(char **envp, const char *key);
+int		valid_identifier(const char *s);
+
+/* ft_export_unset.c */
+int		count_env(char **envp);
+int		key_len(const char *s);
+int		compare_export_keys(char *a, char *b);
+void	sort_env_export(char **arr);
+char	**duplicate_env_and_sort(char **envp);
+int		print_export(char **envp);
+int		process_assignment(char *arg, char ***envp_addr);
+
 int		ft_export(char **argv, char ***envp_addr);
 int		ft_unset(char **argv, char ***envp_addr);
-int		ft_exit(char **argv);
 
 #endif
