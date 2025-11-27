@@ -6,7 +6,7 @@
 /*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 11:29:28 by joperez2          #+#    #+#             */
-/*   Updated: 2025/11/27 13:55:59 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/27 20:15:53 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	**init_env(char **envp)
 
 	dup = dup_envp(envp);
 	if (!dup)
-		error_exit("minishell: malloc", 1);
+		error_exit("malloc", 1);
 	return (dup);
 }
 
@@ -64,6 +64,8 @@ int	handle_line(char *line, char ***envp_addr)
 	free_tokens(tok);
 	if (!cmds)
 		return (0);
+	set_parent_exec_signals();
 	should_exit = execute_commands(cmds, envp_addr);
+	set_interactive_signals();
 	return (should_exit);
 }

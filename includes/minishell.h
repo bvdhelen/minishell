@@ -6,7 +6,7 @@
 /*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:04:19 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/27 13:55:46 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/27 20:18:03 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,6 +187,7 @@ int		ft_unset(char **argv, char ***envp_addr);
 /* ---------------- SIGNALS ---------------- */
 
 void	set_interactive_signals(void);
+void	set_parent_exec_signals(void);
 void	set_child_signals(void);
 void	handle_child_status(int status);
 

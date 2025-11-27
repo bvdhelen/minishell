@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 11:29:50 by joperez2          #+#    #+#             */
-/*   Updated: 2025/11/27 11:41:57 by joperez2         ###   ########.fr       */
+/*   Updated: 2025/11/27 14:45:18 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,12 @@ static void	exit_shell(char **envp)
 	rl_clear_history();
 	free_envp(envp);
 	exit(g_exit_status);
+	//ft_exit();
 }
 
 static void	handle_eof(char **envp)
 {
-	ft_putstr_fd("exit\n", 1);
+	ft_putstr_fd("\033[0;31mexit\033[0m\n", 1);
 	exit_shell(envp);
 }
 

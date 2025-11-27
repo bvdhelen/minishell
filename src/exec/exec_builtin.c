@@ -32,8 +32,6 @@ int	is_parent_builtin(char *cmd)
 }
 
 /*Función que ejecuta el builtin y devuelve su código de salida*/
-// if (!cmd || !cmd->argv || !cmd->argv[0])
-	// 	return (1);
 int	execute_child_builtin(t_cmd *cmd, char **envp)
 {
 	if (!ft_strcmp(cmd->argv[0], "echo"))
@@ -46,8 +44,6 @@ int	execute_child_builtin(t_cmd *cmd, char **envp)
 }
 
 /*Función que ejecuta el builtin y devuelve su código de salida*/
-// if (!ft_strcmp(cmd->argv[0], "exit"))
-//  	return (ft_exit(cmd->argv));
 int	execute_parent_builtin(t_cmd *cmd, char ***envp_addr)
 {
 	if (!ft_strcmp(cmd->argv[0], "cd"))

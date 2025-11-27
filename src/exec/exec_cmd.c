@@ -96,7 +96,10 @@ int	execute_command(t_cmd *cmd, char ***envp_addr)
 		if (pid == -1)
 			error_exit("fork", 1);
 		if (pid == 0)
+		{
+			set_child_signals();
 			exit(execute_child_builtin(cmd, *envp_addr));
+		}
 		waitpid(pid, &status, 0);
 		return (WEXITSTATUS(status));
 	}

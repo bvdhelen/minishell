@@ -27,6 +27,7 @@ int	handle_middle_cmd(t_cmd *cmd, int input_fd, char **envp)
 		error_exit("fork error", 1);
 	if (pid == 0)
 	{
+		set_child_signals();
 		close(fd[0]);
 		if (input_fd != STDIN_FILENO)
 		{
@@ -54,6 +55,7 @@ pid_t	handle_last_cmd(t_cmd *cmd, int input_fd, char **envp)
 		error_exit("last fork error", 1);
 	if (pid == 0)
 	{
+		set_child_signals();
 		if (input_fd != STDIN_FILENO)
 		{
 			dup2(input_fd, STDIN_FILENO);
