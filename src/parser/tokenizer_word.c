@@ -6,7 +6,7 @@
 /*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:07:05 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/14 20:00:00 by joperez2         ###   ########.fr       */
+/*   Updated: 2025/11/26 13:12:47 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,6 @@ static void	init_builder(t_wbuild *b)
 	b->mbuf = NULL;
 	b->mlen = 0;
 	b->mcap = 0;
-}
-
-static int	append_repeat(t_wbuild *b, char tag, size_t count)
-{
-	size_t	k;
-
-	k = 0;
-	while (k < count)
-	{
-		if (!buf_append_char(&b->mbuf, &b->mlen, &b->mcap, tag))
-			return (0);
-		k++;
-	}
-	return (1);
 }
 
 static int	append_quoted(const char *line, size_t start,

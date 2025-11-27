@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/22 15:02:36 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/20 14:56:03 by eldiaz-c         ###   ########.fr       */
+/*   Created: 2025/11/27 11:29:50 by joperez2          #+#    #+#             */
+/*   Updated: 2025/11/27 11:41:57 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,58 +14,43 @@
 
 int	g_exit_status = 0;
 
+static void	exit_shell(char **envp)
+{
+	rl_clear_history();
+	free_envp(envp);
+	exit(g_exit_status);
+}
+
+static void	handle_eof(char **envp)
+{
+	ft_putstr_fd("exit\n", 1);
+	exit_shell(envp);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
-	char	**envp_copy;
 	char	*line;
-	t_token	*tok;
-	t_cmd	*cmd_list;
+	char	**shell_env;
 
+	(void)argc;
 	(void)argv;
-	if (argc != 1)
-	{
-		printf("Usage: \t\033[0;90m./minishell\033[0m\n");
-		return (1);
-	}
-	envp_copy = dup_envp(envp);
-	if (!envp_copy)
-		return (1);
+	shell_env = init_env(envp);
+	set_interactive_signals();
 	while (1)
 	{
 		line = readline("\033[0;90mminishell$ \033[0m");
 		if (!line)
-		{
-			printf("\033[0;31mexit\033[0m\n");
-			break ;
-		}
+			handle_eof(shell_env);
 		if (*line)
+		{
 			add_history(line);
-		tok = tokenize(line);
-		if (!tok)
-		{
-			free(line);
-			continue ;
+			if (handle_line(line, &shell_env))
+			{
+				free(line);
+				handle_eof(shell_env);
+			}
 		}
-		if (!expand_tokens(tok, envp_copy, g_exit_status))
-		{
-			free_tokens(tok);
-			free(line);
-			continue ;
-		}
-		cmd_list = parse_pipeline(tok);
-		if (cmd_list)
-		{
-			if (cmd_list->next)
-				g_exit_status = execute_pipeline(cmd_list, &envp_copy);
-			else
-				g_exit_status = execute_command(cmd_list, &envp_copy);
-			free_cmds(cmd_list);
-		}
-		free_tokens(tok);
 		free(line);
 	}
-	free_envp(envp_copy);
-	if (g_exit_status > 255)
-		return (g_exit_status % 256);
-	return (g_exit_status);
+	return (0);
 }

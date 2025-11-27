@@ -56,5 +56,7 @@ int	execute_parent_builtin(t_cmd *cmd, char ***envp_addr)
 		return (ft_export(cmd->argv, envp_addr));
 	if (!ft_strcmp(cmd->argv[0], "unset"))
 		return (ft_unset(cmd->argv, envp_addr));
+	if (!ft_strcmp(cmd->argv[0], "exit"))
+		return (ft_exit(cmd->argv));
 	return (127);
 }

@@ -6,11 +6,19 @@
 /*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 14:31:21 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/14 19:57:35 by joperez2         ###   ########.fr       */
+/*   Updated: 2025/11/27 11:19:48 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+static int	append_byte(const char *in, t_expand *e)
+{
+	if (!buf_append_char(&e->out, &e->len, &e->cap, in[e->i]))
+		return (0);
+	e->i++;
+	return (1);
+}
 
 static int	append_status(t_expand *e)
 {
@@ -34,12 +42,7 @@ static int	append_var(const char *in, t_expand *e)
 
 	j = e->i + 1;
 	if (!is_var_first((unsigned char)in[j]))
-	{
-		if (!buf_append_char(&e->out, &e->len, &e->cap, in[e->i]))
-			return (0);
-		e->i++;
-		return (1);
-	}
+		return (append_byte(in, e));
 	while (is_var_next((unsigned char)in[j]))
 		j++;
 	name = ft_strndup(in + e->i + 1, j - (e->i + 1));
@@ -56,23 +59,10 @@ static int	append_var(const char *in, t_expand *e)
 	return (1);
 }
 
-static int	append_byte(const char *in, t_expand *e)
-{
-	if (!buf_append_char(&e->out, &e->len, &e->cap, in[e->i]))
-		return (0);
-	e->i++;
-	return (1);
-}
-
 static int	process_chunk(const char *in, t_expand *e)
 {
 	if (e->meta && e->meta[e->i] == 'S')
-	{
-		if (!buf_append_char(&e->out, &e->len, &e->cap, in[e->i]))
-			return (0);
-		e->i++;
-		return (1);
-	}
+		return (append_byte(in, e));
 	if (in[e->i] == '$' && in[e->i + 1]
 		&& in[e->i + 1] == '?')
 		return (append_status(e));

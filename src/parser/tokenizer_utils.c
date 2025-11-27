@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:10:00 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/15 11:25:57 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/26 13:10:49 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,4 +68,18 @@ char	**free_split(char **arr, int filled)
 		free(arr[k++]);
 	free(arr);
 	return (NULL);
+}
+
+int	append_repeat(t_wbuild *b, char tag, size_t count)
+{
+	size_t	k;
+
+	k = 0;
+	while (k < count)
+	{
+		if (!buf_append_char(&b->mbuf, &b->mlen, &b->mcap, tag))
+			return (0);
+		k++;
+	}
+	return (1);
 }

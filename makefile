@@ -32,6 +32,7 @@ RESET = \033[0m
 
 SRC = \
     src/main.c \
+	src/main_loop.c \
 	src/error_exit.c \
 	src/parser/expander_word.c \
     src/parser/expander.c \
@@ -51,6 +52,8 @@ SRC = \
 	src/exec/builtins/env_utils.c \
 	src/exec/builtins/ft_export_unset.c \
 	src/exec/builtins/child_builtins.c \
+	src/exec/builtins/ft_exit.c \
+	src/signal/signals.c
 
 
 OBJS = $(SRC:.c=.o)
