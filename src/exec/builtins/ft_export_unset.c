@@ -6,7 +6,7 @@
 /*   By: eldiaz-c <eldiaz-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 11:50:58 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/28 13:00:24 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/28 13:04:13 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	print_export(char **envp)
 }
 
 /*Función que imprime mensaje de error para idenificador no válido*/
-static void	print_invalid_identifier(const char *arg)
+static void	print_invalid_identifier(char *arg)
 {
 	ft_putstr_fd("export: '", STDERR_FILENO);
 	ft_putstr_fd(arg, STDERR_FILENO);
