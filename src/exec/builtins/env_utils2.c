@@ -6,7 +6,7 @@
 /*   By: eldiaz-c <eldiaz-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 11:49:05 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/28 11:49:22 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/28 13:00:08 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,29 +62,12 @@ char	*join_keyvalue(const char *key, const char *value)
 	return (s);
 }
 
-/*Función que reemplaza o añade KEY=VALUE
-Devuelve el nuevo envp*/
-char	**env_set(char **envp, const char *key, const char *value)
+/* Función que copia envp y añade un nuevo par al final*/
+static char	**copy_env_add(char **envp, char *new_pair, int n)
 {
 	char	**new_env;
-	char	*new_pair;
-	int		idx;
-	int		n;
 	int		i;
 
-	if (!key)
-		return (envp);
-	new_pair = join_keyvalue(key, value);
-	if (!new_pair)
-		return (envp);
-	idx = env_index(envp, key);
-	if (idx != -1)
-	{
-		free(envp[idx]);
-		envp[idx] = new_pair;
-		return (envp);
-	}
-	n = count_env(envp);
 	new_env = malloc(sizeof(char *) * (n + 2));
 	if (!new_env)
 	{
@@ -103,22 +86,38 @@ char	**env_set(char **envp, const char *key, const char *value)
 	return (new_env);
 }
 
-/*Función que elimina KEY
-Devuelve un nuevo envp*/
-char	**env_unset(char **envp, const char *key)
+/*Función que reemplaza o añade KEY=VALUE
+Devuelve el nuevo envp*/
+char	**env_set(char **envp, const char *key, const char *value)
 {
-	char	**new_env;
+	char	*new_pair;
 	int		idx;
 	int		n;
+
+	if (!key)
+		return (envp);
+	new_pair = join_keyvalue(key, value);
+	if (!new_pair)
+		return (envp);
+	idx = env_index(envp, key);
+	if (idx != -1)
+	{
+		free(envp[idx]);
+		envp[idx] = new_pair;
+		return (envp);
+	}
+	n = count_env(envp);
+	return (copy_env_add(envp, new_pair, n));
+}
+
+/* Función que copia envp excluyendo el índice idx, 
+libera la posición eliminada*/
+static char	**copy_env_exclude(char **envp, int idx, int n)
+{
+	char	**new_env;
 	int		i;
 	int		j;
 
-	if (!envp || !key)
-		return (envp);
-	idx = env_index(envp, key);
-	if (idx == -1)
-		return (envp);
-	n = count_env(envp);
 	new_env = malloc(sizeof(char *) * n);
 	if (!new_env)
 		return (envp);
@@ -135,4 +134,20 @@ char	**env_unset(char **envp, const char *key)
 	new_env[j] = NULL;
 	free(envp);
 	return (new_env);
+}
+
+/*Función que elimina KEY
+Devuelve un nuevo envp*/
+char	**env_unset(char **envp, const char *key)
+{
+	int		idx;
+	int		n;
+
+	if (!envp || !key)
+		return (envp);
+	idx = env_index(envp, key);
+	if (idx == -1)
+		return (envp);
+	n = count_env(envp);
+	return (copy_env_exclude(envp, idx, n));
 }

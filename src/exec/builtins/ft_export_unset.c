@@ -6,17 +6,36 @@
 /*   By: eldiaz-c <eldiaz-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 11:50:58 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/28 11:51:12 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/28 13:00:24 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/minishell.h"
 
+/*Función que imprime una línea de export al estilo bash*/
+static void	print_export_line(char *line)
+{
+	char	*eq;
+
+	eq = ft_strchr(line, '=');
+	if (eq)
+	{
+		write(STDOUT_FILENO, line, (size_t)(eq - line));
+		ft_putstr_fd("=\"", STDOUT_FILENO);
+		ft_putstr_fd(eq + 1, STDOUT_FILENO);
+		ft_putstr_fd("\"\n", STDOUT_FILENO);
+	}
+	else
+	{
+		ft_putstr_fd(line, STDOUT_FILENO);
+		ft_putstr_fd("\n", STDOUT_FILENO);
+	}
+}
+
 /*Función que imprime export al estilo bash (declare -x KEY=VALUE)*/
 int	print_export(char **envp)
 {
 	int		i;
-	char	*eq;
 	char	**copy;
 
 	copy = duplicate_env_and_sort(envp);
@@ -26,23 +45,19 @@ int	print_export(char **envp)
 	while (copy[i])
 	{
 		ft_putstr_fd("declare -x ", STDOUT_FILENO);
-		eq = ft_strchr(copy[i], '=');
-		if (eq)
-		{
-			write(STDOUT_FILENO, copy[i], (size_t)(eq - copy[i]));
-			ft_putstr_fd("=\"", STDOUT_FILENO);
-			ft_putstr_fd(eq + 1, STDOUT_FILENO);
-			ft_putstr_fd("\"\n", STDOUT_FILENO);
-		}
-		else
-		{
-			ft_putstr_fd(copy[i], STDOUT_FILENO);
-			ft_putstr_fd("\n", STDOUT_FILENO);
-		}
+		print_export_line(copy[i]);
 		i++;
 	}
 	free_envp(copy);
 	return (0);
+}
+
+/*Función que imprime mensaje de error para idenificador no válido*/
+static void	print_invalid_identifier(const char *arg)
+{
+	ft_putstr_fd("export: '", STDERR_FILENO);
+	ft_putstr_fd(arg, STDERR_FILENO);
+	ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
 }
 
 /*Función que procesa KEY=VALUE o KEY o KEY= (añade o actualiza envp)*/
@@ -65,9 +80,7 @@ int	process_assignment(char *arg, char ***envp_addr)
 		value = arg + i + 1;
 	if (!valid_identifier(key))
 	{
-		ft_putstr_fd("export: '", STDERR_FILENO);
-		ft_putstr_fd(arg, STDERR_FILENO);
-		ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+		print_invalid_identifier(arg);
 		free(key);
 		return (1);
 	}
