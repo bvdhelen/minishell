@@ -32,9 +32,38 @@ static int	ft_isnumeric(const char *s)
 	return (1);
 }
 
+long long	ft_atoll(const char *str)
+{
+	long long	result;
+	int			sign;
+
+	result = 0;
+	sign = 1;
+	if (*str == '-' || *str == '+')
+	{
+		if (*str == '-')
+			sign = -1;
+		str++;
+	}
+	while (*str >= '0' && *str <= '9')
+	{
+		result = result * 10 + (*str - '0');
+		str++;
+	}
+	return (result *sign);
+}
+
+void	exit_numeric_error(char *arg)
+{
+	ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
+	ft_putstr_fd(arg, STDERR_FILENO);
+	ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
+	g_exit_status = 255;
+}
+
 int	ft_exit(char **argv)
 {
-	long	code;
+	long long	code;
 
 	if (!argv[1])
 	{
@@ -43,19 +72,16 @@ int	ft_exit(char **argv)
 	}
 	if (!ft_isnumeric(argv[1]))
 	{
-		ft_putstr_fd("exit: ", STDERR_FILENO);
-		ft_putstr_fd(argv[1], STDERR_FILENO);
-		ft_putstr_fd("numeric argument required\n", STDERR_FILENO);
-		g_exit_status = 2;
+		exit_numeric_error(argv[1]);
 		return (1);
 	}
 	if (argv[2])
 	{
-		ft_putstr_fd("exit: too many arguments\n", STDERR_FILENO);
+		ft_putstr_fd("minishell: exit: too many arguments\n", STDERR_FILENO);
 		g_exit_status = 1;
 		return (0);
 	}
-	code = ft_atoi(argv[1]);
+	code = ft_atoll(argv[1]);
 	g_exit_status = (unsigned char)code;
 	return (1);
 }

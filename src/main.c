@@ -6,7 +6,7 @@
 /*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 11:29:50 by joperez2          #+#    #+#             */
-/*   Updated: 2025/11/27 14:45:18 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/28 09:52:02 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ static void	exit_shell(char **envp)
 	rl_clear_history();
 	free_envp(envp);
 	exit(g_exit_status);
-	//ft_exit();
 }
 
 static void	handle_eof(char **envp)

@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-extern int	g_exit_status;
+//extern int	g_exit_status;
 
 /*Función para ejecutar los procesos hijos desde el primero hasta el penúltimo*/
 int	handle_middle_cmd(t_cmd *cmd, int input_fd, char **envp)

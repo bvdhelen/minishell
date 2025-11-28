@@ -6,7 +6,7 @@
 /*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 11:00:51 by joperez2          #+#    #+#             */
-/*   Updated: 2025/11/27 20:24:43 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/28 09:06:38 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	parent_exec_sigint(int sig)
 	write(1, "\n", 1);
 }
 
-void	set_parent_exec_signals(void)
+void	set_parent_signals(void)
 {
 	struct sigaction	sa;
 
