@@ -12,6 +12,24 @@
 
 #include "../../../includes/minishell.h"
 
+static void	free_envp_partial(char **new, int i)
+{
+	while (i-- > 0)
+		free(new[i]);
+	free(new);
+}
+
+static char	**alloc_empty_envp(void)
+{
+	char	**new;
+
+	new = malloc(sizeof(char *));
+	if (!new)
+		return (NULL);
+	new[0] = NULL;
+	return (new);
+}
+
 /*Función que duplica un envp (matriz de strings) en memoria nueva*/
 char	**dup_envp(char **envp)
 {
@@ -19,13 +37,7 @@ char	**dup_envp(char **envp)
 	char	**new;
 
 	if (!envp)
-	{
-		new = malloc(sizeof(char *));
-		if (!new)
-			return (NULL);
-		new[0] = NULL;
-		return (new);
-	}
+		return (alloc_empty_envp());
 	i = 0;
 	while (envp[i])
 		i++;
@@ -38,9 +50,7 @@ char	**dup_envp(char **envp)
 		new[i] = ft_strdup(envp[i]);
 		if (!new[i])
 		{
-			while (i-- > 0)
-				free(new[i]);
-			free(new);
+			free_envp_partial(new, i);
 			return (NULL);
 		}
 		i++;
