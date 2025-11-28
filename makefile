@@ -48,6 +48,7 @@ SRC = \
 	src/exec/exec_pipe.c \
 	src/exec/exec_cmd_utils.c \
 	src/exec/exec_builtin.c \
+	src/exec/exec_router.c \
 	src/exec/builtins/ft_cd.c \
 	src/exec/builtins/env_utils.c \
 	src/exec/builtins/env_utils2.c \

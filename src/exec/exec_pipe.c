@@ -12,32 +12,29 @@
 
 #include "../../includes/minishell.h"
 
-//extern int	g_exit_status;
-
-/*Función para ejecutar los procesos hijos desde el primero hasta el penúltimo*/
 int	handle_middle_cmd(t_cmd *cmd, int input_fd, char **envp)
 {
 	int		fd[2];
 	pid_t	pid;
 
 	if (pipe(fd) == -1)
-		error_exit("pipe error", 1);
+		error_exit("pipe", 1);
 	pid = fork();
 	if (pid == -1)
-		error_exit("fork error", 1);
+		error_exit("fork", 1);
 	if (pid == 0)
 	{
 		set_child_signals();
-		close(fd[0]);
 		if (input_fd != STDIN_FILENO)
 		{
 			dup2(input_fd, STDIN_FILENO);
 			close(input_fd);
 		}
 		dup2(fd[1], STDOUT_FILENO);
+		close(fd[0]);
 		close(fd[1]);
 		execute_command_direct(cmd, envp);
-		exit(EXIT_FAILURE);
+		exit(1);
 	}
 	close(fd[1]);
 	if (input_fd != STDIN_FILENO)
@@ -45,14 +42,13 @@ int	handle_middle_cmd(t_cmd *cmd, int input_fd, char **envp)
 	return (fd[0]);
 }
 
-/*Función para ejecutar el último proceso hijo*/
 pid_t	handle_last_cmd(t_cmd *cmd, int input_fd, char **envp)
 {
 	pid_t	pid;
 
 	pid = fork();
 	if (pid == -1)
-		error_exit("last fork error", 1);
+		error_exit("fork", 1);
 	if (pid == 0)
 	{
 		set_child_signals();
@@ -62,16 +58,14 @@ pid_t	handle_last_cmd(t_cmd *cmd, int input_fd, char **envp)
 			close(input_fd);
 		}
 		execute_command_direct(cmd, envp);
-		exit(EXIT_FAILURE);
+		exit(1);
 	}
 	if (input_fd != STDIN_FILENO)
 		close(input_fd);
 	return (pid);
 }
 
-/*Función para esperar a todos los procesos hijos
-y devolver el código de salida del último comando*/
-void	wait_all(pid_t last_pid)
+static void	wait_all(pid_t last_pid)
 {
 	int		status;
 	pid_t	pid;
@@ -90,8 +84,6 @@ void	wait_all(pid_t last_pid)
 	}
 }
 
-/*Función para ejecutar una lista enlazada de comandos,
-conectándolos con pipes si hay más de uno*/
 int	execute_pipeline(t_cmd *cmd_list, char ***envp_addr)
 {
 	t_cmd	*cmd;

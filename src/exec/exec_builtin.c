@@ -16,22 +16,28 @@ int	is_child_builtin(char *cmd)
 {
 	if (!cmd)
 		return (0);
-	return (!ft_strcmp(cmd, "echo")
-		|| !ft_strcmp(cmd, "pwd")
-		|| !ft_strcmp(cmd, "env"));
+	if (!ft_strcmp(cmd, "echo"))
+		return (1);
+	if (!ft_strcmp(cmd, "pwd"))
+		return (1);
+	if (!ft_strcmp(cmd, "env"))
+		return (1);
+	return (0);
 }
 
 int	is_parent_builtin(char *cmd)
 {
 	if (!cmd)
 		return (0);
-	return (!ft_strcmp(cmd, "cd")
-		|| !ft_strcmp(cmd, "export")
-		|| !ft_strcmp(cmd, "unset")
-		|| !ft_strcmp(cmd, "exit"));
+	if (!ft_strcmp(cmd, "cd"))
+		return (1);
+	if (!ft_strcmp(cmd, "export"))
+		return (1);
+	if (!ft_strcmp(cmd, "unset"))
+		return (1);
+	return (0);
 }
 
-/*Función que ejecuta el builtin y devuelve su código de salida*/
 int	execute_child_builtin(t_cmd *cmd, char **envp)
 {
 	if (!ft_strcmp(cmd->argv[0], "echo"))
@@ -43,7 +49,6 @@ int	execute_child_builtin(t_cmd *cmd, char **envp)
 	return (127);
 }
 
-/*Función que ejecuta el builtin y devuelve su código de salida*/
 int	execute_parent_builtin(t_cmd *cmd, char ***envp_addr)
 {
 	if (!ft_strcmp(cmd->argv[0], "cd"))
@@ -52,7 +57,5 @@ int	execute_parent_builtin(t_cmd *cmd, char ***envp_addr)
 		return (ft_export(cmd->argv, envp_addr));
 	if (!ft_strcmp(cmd->argv[0], "unset"))
 		return (ft_unset(cmd->argv, envp_addr));
-	if (!ft_strcmp(cmd->argv[0], "exit"))
-		return (ft_exit(cmd->argv));
 	return (127);
 }

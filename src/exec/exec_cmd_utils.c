@@ -12,21 +12,20 @@
 
 #include "../../includes/minishell.h"
 
-/*Función para concatenar la ruta con el comando*/
-char	*join_paths(const char *folder, const char *cmd)
+static char	*join_paths(const char *folder, const char *cmd)
 {
-	char	*full_path;
-	char	*result;
+	char	*tmp;
+	char	*full;
 
-	full_path = ft_strjoin(folder, "/");
-	result = ft_strjoin(full_path, cmd);
-	free(full_path);
-	return (result);
+	tmp = ft_strjoin(folder, "/");
+	if (!tmp)
+		return (NULL);
+	full = ft_strjoin(tmp, cmd);
+	free(tmp);
+	return (full);
 }
 
-/*Función para buscar en los directorios de paths una ruta ejecutable válida
-para el comando cmd y la devuelve si la encuentra*/
-char	*search_in_paths(char **paths, char *cmd)
+static char	*search_in_paths(char **paths, char *cmd)
 {
 	int		i;
 	char	*path;
@@ -45,15 +44,16 @@ char	*search_in_paths(char **paths, char *cmd)
 	return (NULL);
 }
 
-/*Función para encontrar la ruta del comando (si hay envp o path)*/
 char	*get_cmd_path(char *cmd, char **envp)
 {
 	int		i;
-	char	*path;
 	char	**paths;
+	char	*path;
 
+	if (!envp || !cmd || !*cmd)
+		return (NULL);
 	i = 0;
-	while (envp[i] && !ft_strnstr(envp[i], "PATH=", 5))
+	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5))
 		i++;
 	if (!envp[i])
 		return (NULL);
@@ -65,23 +65,12 @@ char	*get_cmd_path(char *cmd, char **envp)
 	return (path);
 }
 
-/*Función para liberar la memoria de un array de strings hasta el índice count*/
-char	**free_memory(char **result, int count)
-{
-	while (count >= 0)
-	{
-		free(result[count]);
-		count--;
-	}
-	free(result);
-	return (NULL);
-}
-
-/*Función para liberar memoria de las rutas*/
 void	free_paths(char **paths)
 {
 	int	i;
 
+	if (!paths)
+		return ;
 	i = 0;
 	while (paths[i])
 	{

@@ -16,9 +16,9 @@ static int	ft_isnumeric(const char *s)
 {
 	int	i;
 
-	i = 0;
 	if (!s || !*s)
 		return (0);
+	i = 0;
 	if (s[i] == '+' || s[i] == '-')
 		i++;
 	if (!s[i])
@@ -32,7 +32,7 @@ static int	ft_isnumeric(const char *s)
 	return (1);
 }
 
-long long	ft_atoll(const char *str)
+static long long	ft_atoll_ll(const char *str)
 {
 	long long	result;
 	int			sign;
@@ -53,7 +53,7 @@ long long	ft_atoll(const char *str)
 	return (result * sign);
 }
 
-void	exit_numeric_error(char *arg)
+static void	exit_numeric_error(char *arg)
 {
 	ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
 	ft_putstr_fd(arg, STDERR_FILENO);
@@ -66,10 +66,7 @@ int	ft_exit(char **argv)
 	long long	code;
 
 	if (!argv[1])
-	{
-		g_exit_status = 0;
 		return (1);
-	}
 	if (!ft_isnumeric(argv[1]))
 	{
 		exit_numeric_error(argv[1]);
@@ -81,7 +78,7 @@ int	ft_exit(char **argv)
 		g_exit_status = 1;
 		return (0);
 	}
-	code = ft_atoll(argv[1]);
+	code = ft_atoll_ll(argv[1]);
 	g_exit_status = (unsigned char)code;
 	return (1);
 }

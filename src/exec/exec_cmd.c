@@ -12,105 +12,103 @@
 
 #include "../../includes/minishell.h"
 
-//extern int	g_exit_status;
-
-/*Función para buscar rutas absolutas o relativas*/
-int	is_absolute_path(const char *cmd)
+static int	has_slash(const char *s)
 {
-	if (!cmd)
+	int	i;
+
+	if (!s)
 		return (0);
-	if (ft_strncmp("/", cmd, 1) == 0)
-		return (1);
-	if (ft_strncmp("./", cmd, 2) == 0)
-		return (1);
-	if (ft_strncmp("../", cmd, 3) == 0)
-		return (1);
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == '/')
+			return (1);
+		i++;
+	}
 	return (0);
 }
 
-/*Función para comprobar si es una ruta absoluta o relativa*/
-char	*check_direct_path(const char *cmd)
+static char	*resolve_path(t_cmd *cmd, char **envp)
 {
-	if (is_absolute_path(cmd) && access(cmd, X_OK) == 0)
-		return (ft_strdup(cmd));
-	return (NULL);
-}
+	char	*path;
 
-/*Función para comprobar si el acceso está permitido 
-(comando encontrado) pero no ejecutable
-código de error 126 -> comando encontrado pero no ejecutable*/
-void	check_access(char *path)
-{
-	if (access(path, X_OK) == -1)
+	if (has_slash(cmd->argv[0]))
+		return (ft_strdup(cmd->argv[0]));
+	path = get_cmd_path(cmd->argv[0], envp);
+	if (!path)
 	{
-		free(path);
-		error_exit("permission denied", 126);
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
+		ft_putstr_fd(": command not found\n", STDERR_FILENO);
+		exit(127);
 	}
+	return (path);
 }
 
-/*Función para ejecutar un comando directamente (sin fork)
-Se usa dentro de los procesos hijos del pipeline*/
-/*127 -> código de error comando no encontrado
-ENOENT -> código de error no existe el archivo o directorio*/
+static void	handle_exec_error(char *path, char *cmd)
+{
+	if (errno == EACCES)
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(cmd, STDERR_FILENO);
+		ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
+		free(path);
+		exit(126);
+	}
+	if (errno == ENOENT)
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(cmd, STDERR_FILENO);
+		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+		free(path);
+		exit(127);
+	}
+	perror("minishell");
+	free(path);
+	exit(1);
+}
+
 void	execute_command_direct(t_cmd *cmd, char **envp)
 {
 	char	*path;
 
-	path = check_direct_path(cmd->argv[0]);
-	if (!path)
-		path = get_cmd_path(cmd->argv[0], envp);
-	if (!path)
+	if (!cmd || !cmd->argv || !cmd->argv[0])
+		exit(0);
+	path = resolve_path(cmd, envp);
+	if (access(path, F_OK) == -1)
+		handle_exec_error(path, cmd->argv[0]);
+	if (access(path, X_OK) == -1)
 	{
-		fprintf(stderr, "\033[0;35mminishell: \033[0m"
-			"%s: command not found\n", cmd->argv[0]);
-		exit(127);
+		errno = EACCES;
+		handle_exec_error(path, cmd->argv[0]);
 	}
-	check_access(path);
-	if (execve(path, cmd->argv, envp) == -1)
-	{
-		free(path);
-		if (errno == ENOENT)
-			error_exit("no such a file or directory", 127);
-		else if (errno == EACCES)
-			error_exit("permission denied", 126);
-		else
-			error_exit("execve", 1);
-	}
+	execve(path, cmd->argv, envp);
+	handle_exec_error(path, cmd->argv[0]);
 }
 
-/*Función principal para ejecutar un comando*/
-//printf("[DEBUG] Entrando en execute_command()\n");
-//printf("[DEBUG] Estoy en el hijo (PID: %d)\n", getpid());
-//printf("[DEBUG] Padre (PID: %d), esperando al hijo...\n", getpid());
-//printf("[DEBUG] Salgo de execute_command() con status %d\n", status);
 int	execute_command(t_cmd *cmd, char ***envp_addr)
 {
 	pid_t	pid;
 	int		status;
+	int		is_builtin;
 
-	if (is_parent_builtin(cmd->argv[0]) == 1)
-		return (execute_parent_builtin(cmd, envp_addr));
-	if (is_child_builtin(cmd->argv[0]) == 1)
-	{
-		pid = fork();
-		if (pid == -1)
-			error_exit("fork", 1);
-		if (pid == 0)
-		{
-			set_child_signals();
-			exit(execute_child_builtin(cmd, *envp_addr));
-		}
-		waitpid(pid, &status, 0);
-		return (WEXITSTATUS(status));
-	}
+	if (!cmd || !cmd->argv || !cmd->argv[0])
+		return (0);
+	is_builtin = is_child_builtin(cmd->argv[0]);
 	pid = fork();
 	if (pid == -1)
 		error_exit("fork", 1);
 	if (pid == 0)
+	{
+		set_child_signals();
+		if (is_builtin)
+			exit(execute_child_builtin(cmd, *envp_addr));
 		execute_command_direct(cmd, *envp_addr);
+	}
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
-	else
-		return (1);
+	if (WIFSIGNALED(status))
+		return (128 + WTERMSIG(status));
+	return (1);
 }

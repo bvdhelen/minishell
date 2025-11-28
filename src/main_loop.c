@@ -3,54 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   main_loop.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: joperez2 <joperez2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 11:29:28 by joperez2          #+#    #+#             */
-/*   Updated: 2025/11/28 09:06:52 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/28 12:25:56 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-char	**init_env(char **envp)
+static void	handle_eof(char **envp)
 {
-	char	**dup;
-
-	dup = dup_envp(envp);
-	if (!dup)
-		error_exit("malloc", 1);
-	return (dup);
+	ft_putstr_fd("exit\n", 1);
+	rl_clear_history();
+	free_envp(envp);
+	exit(g_exit_status);
 }
 
-int	execute_commands(t_cmd *cmds, char ***envp_addr)
-{
-	int		should_exit;
-	char	*cmd_name;
-
-	should_exit = 0;
-	if (!cmds->argv || !cmds->argv[0])
-	{
-		free_cmds(cmds);
-		return (0);
-	}
-	cmd_name = cmds->argv[0];
-	if (cmds->next)
-		g_exit_status = execute_pipeline(cmds, envp_addr);
-	else if (is_parent_builtin(cmd_name))
-		g_exit_status = execute_parent_builtin(cmds, envp_addr);
-	else
-		g_exit_status = execute_command(cmds, envp_addr);
-	if (!cmds->next && !ft_strcmp(cmd_name, "exit"))
-		should_exit = 1;
-	free_cmds(cmds);
-	return (should_exit);
-}
-
-int	handle_line(char *line, char ***envp_addr)
+static int	handle_line(char *line, char ***envp_addr)
 {
 	t_token	*tok;
 	t_cmd	*cmds;
-	int		should_exit;
 
 	tok = tokenize(line);
 	if (!tok)
@@ -64,8 +37,29 @@ int	handle_line(char *line, char ***envp_addr)
 	free_tokens(tok);
 	if (!cmds)
 		return (0);
-	set_parent_signals();
-	should_exit = execute_commands(cmds, envp_addr);
+	execute_commands(cmds, envp_addr);
+	return (1);
+}
+
+void	main_loop(char ***envp_addr)
+{
+	char	*line;
+
 	set_interactive_signals();
-	return (should_exit);
+	while (1)
+	{
+		line = readline("\033[0;90mminishell$ \033[0m");
+		if (!line)
+			handle_eof(*envp_addr);
+		if (*line)
+		{
+			add_history(line);
+			if (!handle_line(line, envp_addr))
+			{
+				free(line);
+				continue ;
+			}
+		}
+		free(line);
+	}
 }
