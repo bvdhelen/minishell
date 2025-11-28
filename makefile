@@ -50,7 +50,9 @@ SRC = \
 	src/exec/exec_builtin.c \
 	src/exec/builtins/ft_cd.c \
 	src/exec/builtins/env_utils.c \
+	src/exec/builtins/env_utils2.c \
 	src/exec/builtins/ft_export_unset.c \
+	src/exec/builtins/ft_utils_export_unset.c \
 	src/exec/builtins/child_builtins.c \
 	src/exec/builtins/ft_exit.c \
 	src/signal/signals.c

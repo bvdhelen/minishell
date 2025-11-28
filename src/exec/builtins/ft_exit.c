@@ -50,7 +50,7 @@ long long	ft_atoll(const char *str)
 		result = result * 10 + (*str - '0');
 		str++;
 	}
-	return (result *sign);
+	return (result * sign);
 }
 
 void	exit_numeric_error(char *arg)
