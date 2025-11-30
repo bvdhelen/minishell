@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 14:18:22 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/10/29 14:18:23 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/30 10:56:46 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,10 @@ void	free_cmds(t_cmd *cmd)
 				free(cmd->argv[i++]);
 			free(cmd->argv);
 		}
+		if (cmd->infile != -1)
+			close(cmd->infile);
+		if (cmd->outfile != -1)
+			close(cmd->outfile);
 		free(cmd);
 		cmd = nxt;
 	}

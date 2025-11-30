@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export_unset.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eldiaz-c <eldiaz-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 11:50:58 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/28 13:04:13 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/30 12:33:48 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	print_export(char **envp)
 	return (0);
 }
 
-/*Función que imprime mensaje de error para idenificador no válido*/
+/*Función que imprime mensaje de error para identificador no válido*/
 static void	print_invalid_identifier(char *arg)
 {
 	ft_putstr_fd("export: '", STDERR_FILENO);
@@ -105,32 +105,6 @@ int	ft_export(char **argv, char ***envp_addr)
 	{
 		if (process_assignment(argv[i], envp_addr) != 0)
 			status = 1;
-		i++;
-	}
-	return (status);
-}
-
-/*builtin unset: elimina variables de entorno*/
-int	ft_unset(char **argv, char ***envp_addr)
-{
-	int	i;
-	int	status;
-
-	if (!argv || !envp_addr)
-		return (1);
-	i = 1;
-	status = 0;
-	while (argv[i])
-	{
-		if (!valid_identifier(argv[i]) || ft_strchr(argv[i], '=') != NULL)
-		{
-			ft_putstr_fd("unset: '", STDERR_FILENO);
-			ft_putstr_fd(argv[i], STDERR_FILENO);
-			ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
-			status = 1;
-		}
-		else
-			*envp_addr = env_unset(*envp_addr, argv[i]);
 		i++;
 	}
 	return (status);

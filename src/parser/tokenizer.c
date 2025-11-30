@@ -6,7 +6,7 @@
 /*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:06:52 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/14 20:00:14 by joperez2         ###   ########.fr       */
+/*   Updated: 2025/11/30 12:46:33 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ static int	handle_word_result(char *w, char *m, int err, t_token **head)
 {
 	if (err)
 	{
-		fprintf(stderr, "minishell: syntax error: unclosed quote\n");
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd("syntax error: unclosed quote\n", STDERR_FILENO);
 		free(w);
 		free(m);
 		return (0);
@@ -64,6 +65,13 @@ static int	process_step(const char *line, size_t *i, t_token **head)
 	char	*m;
 
 	r = handle_pipe(line, i, head);
+	if (r != 0)
+	{
+		if (r < 0)
+			return (-1);
+		return (1);
+	}
+	r = handle_redir(line, i, head);
 	if (r != 0)
 	{
 		if (r < 0)

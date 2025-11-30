@@ -12,6 +12,33 @@
 
 #include "../../includes/minishell.h"
 
+int	run_parent_builtin_with_redirs(t_cmd *cmd, char ***envp_addr)
+{
+	int	save_in;
+	int	save_out;
+	int	status;
+
+	save_in = dup(STDIN_FILENO);
+	save_out = dup(STDOUT_FILENO);
+	if (save_in == -1 || save_out == -1)
+	{
+		perror("minishell: dup");
+		if (save_in != -1)
+			close(save_in);
+		if (save_out != -1)
+			close(save_out);
+		return (1);
+	}
+	status = 1;
+	if (!apply_redirs(cmd))
+		status = execute_parent_builtin(cmd, envp_addr);
+	dup2(save_in, STDIN_FILENO);
+	close(save_in);
+	dup2(save_out, STDOUT_FILENO);
+	close(save_out);
+	return (status);
+}
+
 int	is_child_builtin(char *cmd)
 {
 	if (!cmd)

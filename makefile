@@ -32,32 +32,37 @@ RESET = \033[0m
 
 SRC = \
     src/main.c \
-	src/main_loop.c \
-	src/error_exit.c \
-	src/parser/expander_word.c \
+    src/main_loop.c \
+    src/error_exit.c \
+    src/parser/expander_word.c \
     src/parser/expander.c \
     src/parser/parser.c \
     src/parser/parser_utils.c \
+    src/parser/parser_redirs.c \
     src/parser/quotes.c \
     src/parser/tokenizer.c \
     src/parser/tokenizer_buf.c \
     src/parser/tokenizer_word.c \
     src/parser/tokenizer_pipe.c \
+    src/parser/tokenizer_redir.c \
     src/parser/tokenizer_utils.c \
-	src/exec/exec_cmd.c \
-	src/exec/exec_pipe.c \
-	src/exec/exec_cmd_utils.c \
-	src/exec/exec_builtin.c \
-	src/exec/exec_router.c \
-	src/exec/builtins/ft_cd.c \
-	src/exec/builtins/env_utils.c \
-	src/exec/builtins/env_utils2.c \
-	src/exec/builtins/ft_export_unset.c \
-	src/exec/builtins/ft_utils_export_unset.c \
-	src/exec/builtins/child_builtins.c \
-	src/exec/builtins/ft_exit.c \
-	src/signal/signals.c
-
+    src/exec/exec_cmd.c \
+    src/exec/exec_pipe.c \
+    src/exec/exec_cmd_utils.c \
+    src/exec/exec_builtin.c \
+    src/exec/exec_router.c \
+    src/exec/exec_redirs.c \
+    src/exec/heredoc.c \
+    src/exec/builtins/ft_cd.c \
+    src/exec/builtins/env_utils.c \
+    src/exec/builtins/env_utils2.c \
+    src/exec/builtins/env_utils3.c \
+    src/exec/builtins/ft_export_unset.c \
+    src/exec/builtins/ft_unset.c \
+    src/exec/builtins/ft_utils_export_unset.c \
+    src/exec/builtins/child_builtins.c \
+    src/exec/builtins/ft_exit.c \
+    src/signal/signals.c
 
 OBJS = $(SRC:.c=.o)
 

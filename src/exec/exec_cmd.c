@@ -101,6 +101,8 @@ int	execute_command(t_cmd *cmd, char ***envp_addr)
 	if (pid == 0)
 	{
 		set_child_signals();
+		if (apply_redirs(cmd))
+			exit(1);
 		if (is_builtin)
 			exit(execute_child_builtin(cmd, *envp_addr));
 		execute_command_direct(cmd, *envp_addr);

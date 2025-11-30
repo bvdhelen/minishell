@@ -6,7 +6,7 @@
 /*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 14:31:21 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/27 11:19:48 by joperez2         ###   ########.fr       */
+/*   Updated: 2025/11/30 12:38:19 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,17 @@ static int	append_byte(const char *in, t_expand *e)
 
 static int	append_status(t_expand *e)
 {
-	char	buf[16];
-	int		n;
+	char	*str;
 
-	n = snprintf(buf, sizeof(buf), "%d", e->last);
-	if (n < 0)
+	str = ft_itoa(e->last);
+	if (!str)
 		return (0);
-	if (!buf_append_chars(&e->out, &e->len, &e->cap, buf))
+	if (!buf_append_chars(&e->out, &e->len, &e->cap, str))
+	{
+		free(str);
 		return (0);
+	}
+	free(str);
 	e->i += 2;
 	return (1);
 }

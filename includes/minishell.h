@@ -3,35 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joperez2 <joperez2@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/22 15:04:19 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/28 12:33:38 by joperez2         ###   ########.fr       */
+/*   Created: 2025/11/30 12:00:00 by joperez2          #+#    #+#             */
+/*   Updated: 2025/11/30 12:51:12 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <stdlib.h>
+# include <unistd.h>
+# include <stdio.h>
+# include <signal.h>
+# include <fcntl.h>
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <dirent.h>
+# include <errno.h>
+# include <string.h>
+
+# include <readline/readline.h>
+# include <readline/history.h>
+
+# include "libft/libft.h"
 # include "ft_printf/ft_printf.h"
 # include "get_next_line/get_next_line.h"
-# include "libft/libft.h"
-# include <ctype.h>
-# include <errno.h>
-# include <limits.h>
-# include <readline/history.h>
-# include <readline/readline.h>
-# include <signal.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <sys/stat.h>
-# include <sys/wait.h>
-# include <unistd.h>
 
-extern int	g_exit_status;
+extern int			g_exit_status;
 
-/* ---------------- TOKENIZER / PARSER TYPES ---------------- */
+/* ---------------------- TOKENS / COMMANDS / STRUCTS ---------------------- */
 
 typedef enum e_tok_type
 {
@@ -59,135 +61,120 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }	t_cmd;
 
-typedef struct s_expand
-{
-	char			*out;
-	size_t			len;
-	size_t			cap;
-	size_t			i;
-	const char		*meta;
-	char			**envp;
-	int				last;
-}	t_expand;
-
 typedef struct s_wbuild
 {
-	char			*buf;
-	size_t			len;
-	size_t			cap;
-	char			*mbuf;
-	size_t			mlen;
-	size_t			mcap;
+	char	*buf;
+	size_t	len;
+	size_t	cap;
+	char	*mbuf;
+	size_t	mlen;
+	size_t	mcap;
 }	t_wbuild;
 
-/* ---------------- TOKENIZER / PARSER API ---------------- */
+typedef struct s_expand
+{
+	char		*out;
+	size_t		len;
+	size_t		cap;
+	size_t		i;
+	const char	*meta;
+	char		**envp;
+	int			last;
+}	t_expand;
+
+/* ------------------------------ CORE / MAIN ------------------------------ */
+
+void	main_loop(char ***envp_addr);
+void	error_exit(const char *msg, int code);
+
+/* ----------------------------- ENV UTILITIES ----------------------------- */
+
+char	**dup_envp(char **envp);
+void	free_envp(char **envp);
+int		valid_identifier(const char *s);
+int		count_env(char **envp);
+int		env_index(char **envp, const char *key);
+char	**env_set(char **envp, const char *key, const char *value);
+char	**env_unset(char **envp, const char *key);
+char	*join_keyvalue(const char *key, const char *value);
+char	**duplicate_env_and_sort(char **envp);
+
+/* -------------------------------- BUILTINS ------------------------------- */
+
+int		ft_echo(char **argv);
+int		ft_pwd(char **argv);
+int		ft_env(char **envp);
+int		ft_cd(char **argv, char ***envp_addr);
+int		ft_export(char **argv, char ***envp_addr);
+int		ft_unset(char **argv, char ***envp_addr);
+int		ft_exit(char **argv);
+
+/* --------------------------- EXEC / ROUTER / PIPE ------------------------ */
+
+int		is_child_builtin(char *cmd);
+int		is_parent_builtin(char *cmd);
+int		execute_child_builtin(t_cmd *cmd, char **envp);
+int		execute_parent_builtin(t_cmd *cmd, char ***envp_addr);
+int		run_parent_builtin_with_redirs(t_cmd *cmd, char ***envp_addr);
+
+void	execute_commands(t_cmd *cmds, char ***envp_addr);
+
+int		execute_command(t_cmd *cmd, char ***envp_addr);
+void	execute_command_direct(t_cmd *cmd, char **envp);
+int		execute_pipeline(t_cmd *cmd_list, char ***envp_addr);
+
+int		apply_redirs(t_cmd *cmd);
+int		set_heredoc_infile(t_cmd *cmd, const char *delim);
+
+/* -------------------------- TOKENIZER / PARSER --------------------------- */
 
 t_token	*tokenize(const char *line);
 void	free_tokens(t_token *tok);
 void	print_tokens(t_token *tok);
-char	**free_split(char **arr, int filled);
-int		append_repeat(t_wbuild *b, char tag, size_t count);
 
-/* tokenizer buffer helpers */
+t_cmd	*parse_pipeline(t_token *tok);
+int		append_cmd(t_cmd **head, t_cmd *node);
+void	free_cmds(t_cmd *cmd);
+
+int		handle_redir_tokens(t_token **tok, t_cmd *cmd);
+int		handle_pipe(const char *line, size_t *i, t_token **head);
+int		handle_redir(const char *line, size_t *i, t_token **head);
+
+/* ------------------------- TOKENIZER BUFFER UTILS ------------------------ */
+
 char	*ft_strndup(const char *s, size_t n);
 int		buf_ensure(char **buf, size_t *cap, size_t need);
 int		buf_append_chars(char **buf, size_t *len, size_t *cap,
 			const char *s);
 int		buf_append_char(char **buf, size_t *len, size_t *cap, char c);
 
-/* tokenizer_word.c */
+/* ----------------------- TOKENIZER WORD / QUOTING ------------------------ */
+
+int		append_repeat(t_wbuild *b, char tag, size_t count);
 char	*read_word(const char *line, size_t *i, int *err, char **out_meta);
 
-/* pipe handler */
-int		handle_pipe(const char *line, size_t *i, t_token **head);
-
-/* quotes split */
 char	**ft_split_with_quotes(const char *s);
+char	**free_split(char **arr, int filled);
 
-/* PARSER */
-t_cmd	*parse_pipeline(t_token *tok);
-void	free_cmds(t_cmd *cmd);
-int		append_cmd(t_cmd **head, t_cmd *node);
-int		push_arg(t_cmd *cmd, const char *word);
+/* ------------------------------- EXPANDER -------------------------------- */
 
-/* parser_debug.c */
-void	print_cmds(t_cmd *cmd);
-
-/* ---------------- EXPANDER ---------------- */
-
-int		expand_tokens(t_token *head, char **envp, int last_status);
 int		is_var_first(int c);
 int		is_var_next(int c);
 char	*lookup_env(const char *name, char **envp);
+int		expand_tokens(t_token *head, char **envp, int last_status);
 char	*expand_word(const char *in, const char *meta,
-			char **envp, int last_status);
+			char **envp, int last);
 
-/* ---------------- EXECUTION ---------------- */
+/* ---------------------------- CMD PATH / UTILS --------------------------- */
 
-/* error_exit.c */
-void	error_exit(const char *msg, int code);
-void	handle_child_status(int status);
-
-/* exec_cmd.c */
-void	execute_command_direct(t_cmd *cmd, char **envp);
-int		execute_command(t_cmd *cmd, char ***envp_addr);
-
-/* exec_path.c */
 char	*get_cmd_path(char *cmd, char **envp);
 void	free_paths(char **paths);
 
-/* exec_pipe.c */
-int		execute_pipeline(t_cmd *cmd_list, char ***envp_addr);
-
-/* exec_builtin.c */
-int		is_child_builtin(char *cmd);
-int		is_parent_builtin(char *cmd);
-int		execute_child_builtin(t_cmd *cmd, char **envp);
-int		execute_parent_builtin(t_cmd *cmd, char ***envp_addr);
-
-/* child_builtins.c */
-int		ft_echo(char **argv);
-int		ft_pwd(char **argv);
-int		ft_env(char **envp);
-
-/* ft_cd.c */
-int		ft_cd(char **argv, char ***envp_addr);
-
-/* ft_exit.c */
-int		ft_exit(char **argv);
-
-/* env_utils.c */
-char	**dup_envp(char **envp);
-void	free_envp(char **envp);
-int		env_index(char **envp, const char *key);
-char	*join_keyvalue(const char *key, const char *value);
-char	**env_set(char **envp, const char *key, const char *value);
-char	**env_unset(char **envp, const char *key);
-
-/* identificadores válidos (export / unset) */
-int		valid_identifier(const char *s);
-
-/* ft_export_unset.c */
-int		count_env(char **envp);
-int		key_len(const char *s);
-int		compare_export_keys(char *a, char *b);
-void	sort_env_export(char **arr);
-char	**duplicate_env_and_sort(char **envp);
-int		print_export(char **envp);
-int		process_assignment(char *arg, char ***envp_addr);
-int		ft_export(char **argv, char ***envp_addr);
-int		ft_unset(char **argv, char ***envp_addr);
-
-/* ---------------- SIGNALS ---------------- */
+/* -------------------------------- SIGNALS -------------------------------- */
 
 void	set_interactive_signals(void);
 void	set_parent_signals(void);
 void	set_child_signals(void);
-
-/* ---------------- MAIN / LOOP ---------------- */
-
-/* main_loop.c + exec_router.c */
-void	main_loop(char ***envp_addr);
-void	execute_commands(t_cmd *cmds, char ***envp_addr);
+void	handle_child_status(int status);
 
 #endif

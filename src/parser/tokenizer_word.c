@@ -6,7 +6,7 @@
 /*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 15:07:05 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/26 13:12:47 by joperez2         ###   ########.fr       */
+/*   Updated: 2025/11/30 12:06:27 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,11 @@ char	*read_word(const char *line, size_t *i, int *err, char **out_meta)
 	t_wbuild	b;
 
 	init_builder(&b);
-	while (line[*i] && !isspace((unsigned char)line[*i]) && line[*i] != '|')
+	while (line[*i]
+		&& !isspace((unsigned char)line[*i])
+		&& line[*i] != '|'
+		&& line[*i] != '<'
+		&& line[*i] != '>')
 	{
 		if (!process_word_char(line, i, &b, err) || *err)
 		{

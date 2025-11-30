@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 14:19:13 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/15 21:58:31 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/11/30 11:16:05 by joperez2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,22 @@ static int	end_of_cmd(t_token *t)
 	return (0);
 }
 
+static int	fill_cmd(t_token **tok, t_cmd *cmd)
+{
+	while (*tok && !end_of_cmd(*tok))
+	{
+		if ((*tok)->type == T_WORD)
+		{
+			if (!push_arg(cmd, (*tok)->value))
+				return (0);
+			*tok = (*tok)->next;
+		}
+		else if (!handle_redir_tokens(tok, cmd))
+			return (0);
+	}
+	return (1);
+}
+
 t_cmd	*parse_pipeline(t_token *tok)
 {
 	t_cmd	*head;
@@ -75,15 +91,8 @@ t_cmd	*parse_pipeline(t_token *tok)
 		if (tok->type == T_PIPE)
 			return (free_cmds(head), NULL);
 		cmd = new_cmd();
-		if (!cmd)
-			return (free_cmds(head), NULL);
-		while (tok && !end_of_cmd(tok))
-		{
-			if (tok->type != T_WORD || !push_arg(cmd, tok->value))
-				return (free_cmds(head), NULL);
-			tok = tok->next;
-		}
-		if (!cmd->argv || !append_cmd(&head, cmd))
+		if (!cmd || !fill_cmd(&tok, cmd)
+			|| !cmd->argv || !append_cmd(&head, cmd))
 			return (free_cmds(head), NULL);
 		if (tok && tok->type == T_PIPE)
 			tok = tok->next;
