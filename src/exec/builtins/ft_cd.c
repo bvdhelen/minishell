@@ -49,6 +49,11 @@ int	ft_cd(char **argv, char ***envp_addr)
 	char	*path;
 	char	*oldcwd;
 
+	if (argv[1] && argv[2])
+	{
+		ft_putstr_fd("cd: too many arguments\n", STDERR_FILENO);
+		return (1);
+	}
 	oldcwd = getcwd(NULL, 0);
 	if (!oldcwd)
 		oldcwd = ft_strdup("");
