@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 11:00:51 by joperez2          #+#    #+#             */
-/*   Updated: 2025/11/30 12:35:35 by joperez2         ###   ########.fr       */
+/*   Updated: 2025/12/02 18:57:29 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,6 @@ void	set_child_signals(void)
 	sa.sa_handler = SIG_DFL;
 	sigaction(SIGINT, &sa, NULL);
 	sigaction(SIGQUIT, &sa, NULL);
+	sa.sa_handler = SIG_DFL;
+	sigaction(SIGPIPE, &sa, NULL);
 }

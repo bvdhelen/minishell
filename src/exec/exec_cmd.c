@@ -71,9 +71,15 @@ static void	handle_exec_error(char *path, char *cmd)
 void	execute_command_direct(t_cmd *cmd, char **envp)
 {
 	char	*path;
+	int		code;
 
 	if (!cmd || !cmd->argv || !cmd->argv[0])
 		exit(0);
+	if (is_child_builtin(cmd->argv[0]))
+	{
+		code = execute_child_builtin(cmd, envp);
+		exit(code);
+	}
 	path = resolve_path(cmd, envp);
 	if (access(path, F_OK) == -1)
 		handle_exec_error(path, cmd->argv[0]);

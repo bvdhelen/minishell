@@ -49,6 +49,10 @@ int	is_child_builtin(char *cmd)
 		return (1);
 	if (!ft_strcmp(cmd, "env"))
 		return (1);
+	if (!ft_strcmp(cmd, "export"))
+		return (1);
+	if (!ft_strcmp(cmd, "unset"))
+		return (1);
 	return (0);
 }
 

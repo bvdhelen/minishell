@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 11:00:00 by eldiaz-c          #+#    #+#             */
-/*   Updated: 2025/11/30 12:01:13 by joperez2         ###   ########.fr       */
+/*   Updated: 2025/12/02 12:32:05 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,10 @@ int	set_heredoc_infile(t_cmd *cmd, const char *delim)
 		close(cmd->infile);
 	fd = create_heredoc(delim);
 	if (fd == -1)
+	{
+		perror("minishell");
 		return (0);
+	}
 	cmd->infile = fd;
 	return (1);
 }
