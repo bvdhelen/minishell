@@ -28,6 +28,26 @@ static int	has_slash(const char *s)
 	return (0);
 }
 
+/*Función para eliminar vacíos iniciales de argv*/
+static void	shift_argv_left_if_needed(t_cmd *cmd)
+{
+	int	i;
+	int	j;
+
+	if (!cmd || !cmd->argv)
+		return ;
+	i = 0;
+	while (cmd->argv[i] && cmd->argv[i][0] == '\0')
+		i++;
+	if (i == 0)
+		return ;
+	j = 0;
+	while (cmd->argv[i])
+		cmd->argv[j++] = cmd->argv[i++];
+	while (cmd->argv[j])
+		cmd->argv[j++] = NULL;
+}
+
 static char	*resolve_path(t_cmd *cmd, char **envp)
 {
 	char	*path;
@@ -47,6 +67,14 @@ static char	*resolve_path(t_cmd *cmd, char **envp)
 
 static void	handle_exec_error(char *path, char *cmd)
 {
+	if (errno == EISDIR)
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(cmd, STDERR_FILENO);
+		ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+		free(path);
+		exit(126);
+	}
 	if (errno == EACCES)
 	{
 		ft_putstr_fd("minishell: ", STDERR_FILENO);
@@ -70,10 +98,14 @@ static void	handle_exec_error(char *path, char *cmd)
 
 void	execute_command_direct(t_cmd *cmd, char **envp)
 {
+	DIR		*dir;
 	char	*path;
 	int		code;
 
-	if (!cmd || !cmd->argv || !cmd->argv[0])
+	if (!cmd || !cmd->argv)
+		exit(0);
+	shift_argv_left_if_needed(cmd);
+	if (!cmd->argv[0])
 		exit(0);
 	if (is_child_builtin(cmd->argv[0]))
 	{
@@ -83,7 +115,14 @@ void	execute_command_direct(t_cmd *cmd, char **envp)
 	path = resolve_path(cmd, envp);
 	if (access(path, F_OK) == -1)
 		handle_exec_error(path, cmd->argv[0]);
-	if (access(path, X_OK) == -1)
+	dir = opendir(path);
+	if (dir)
+	{
+		closedir(dir);
+		errno = EISDIR;
+		handle_exec_error(path, cmd->argv[0]);
+	}
+	if (access(path, F_OK) == -1)
 	{
 		errno = EACCES;
 		handle_exec_error(path, cmd->argv[0]);
@@ -98,7 +137,10 @@ int	execute_command(t_cmd *cmd, char ***envp_addr)
 	int		status;
 	int		is_builtin;
 
-	if (!cmd || !cmd->argv || !cmd->argv[0])
+	if (!cmd || !cmd->argv)
+		return (0);
+	shift_argv_left_if_needed(cmd);
+	if (!cmd->argv[0])
 		return (0);
 	is_builtin = is_child_builtin(cmd->argv[0]);
 	pid = fork();

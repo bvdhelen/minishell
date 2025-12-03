@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 12:00:00 by joperez2          #+#    #+#             */
-/*   Updated: 2025/11/30 12:51:12 by joperez2         ###   ########.fr       */
+/*   Updated: 2025/12/03 13:32:17 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 # include <signal.h>
 # include <fcntl.h>
 # include <sys/types.h>
+# include <sys/stat.h>
+# include <dirent.h>
 # include <sys/wait.h>
 # include <dirent.h>
 # include <errno.h>
