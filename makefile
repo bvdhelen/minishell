@@ -62,7 +62,9 @@ SRC = \
     src/exec/builtins/ft_utils_export_unset.c \
     src/exec/builtins/child_builtins.c \
     src/exec/builtins/ft_exit.c \
-    src/signal/signals.c
+    src/signal/signals.c \
+	src/exec/executor.c \
+	src/exec/exec_cmd_direct.c \
 
 OBJS = $(SRC:.c=.o)
 

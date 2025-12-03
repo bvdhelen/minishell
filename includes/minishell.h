@@ -6,7 +6,7 @@
 /*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 12:00:00 by joperez2          #+#    #+#             */
-/*   Updated: 2025/12/03 13:32:17 by eldiaz-c         ###   ########.fr       */
+/*   Updated: 2025/12/03 14:13:16 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,17 @@ int		run_parent_builtin_with_redirs(t_cmd *cmd, char ***envp_addr);
 
 void	execute_commands(t_cmd *cmds, char ***envp_addr);
 
+void	run_middle_child(t_cmd *cmd,
+			int input_fd, char ***envp_addr, int fd[2]);
+int		handle_parent_builtin_middle(t_cmd *cmd,
+			int input_fd, int pipe_write, char ***envp_addr);
+int		handle_middle_cmd(t_cmd *cmd, int input_fd, char ***envp_addr);
+pid_t	handle_last_cmd(t_cmd *cmd, int input_fd, char **envp);
+void	wait_all(pid_t last_pid);
+
+void	shift_argv_left_if_needed(t_cmd *cmd);
+char	*resolve_path(t_cmd *cmd, char **envp);
+void	handle_exec_error(char *path, char *cmd);
 int		execute_command(t_cmd *cmd, char ***envp_addr);
 void	execute_command_direct(t_cmd *cmd, char **envp);
 int		execute_pipeline(t_cmd *cmd_list, char ***envp_addr);

@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-static void	run_middle_child(t_cmd *cmd, int input_fd, char ***envp_addr, int fd[2])
+void	run_middle_child(t_cmd *cmd, int input_fd, char ***envp_addr, int fd[2])
 {
 	set_child_signals();
 	if (input_fd != STDIN_FILENO)
@@ -29,7 +29,8 @@ static void	run_middle_child(t_cmd *cmd, int input_fd, char ***envp_addr, int fd
 	exit(1);
 }
 
-int	handle_parent_builtin_middle(t_cmd *cmd, int input_fd, int pipe_write, char ***envp_addr)
+int	handle_parent_builtin_middle(t_cmd *cmd,
+	int input_fd, int pipe_write, char ***envp_addr)
 {
 	if (input_fd != STDIN_FILENO)
 	{
@@ -51,11 +52,6 @@ int	handle_middle_cmd(t_cmd *cmd, int input_fd, char ***envp_addr)
 
 	if (pipe(fd) == -1)
 		error_exit("pipe", 1);
-	/*if (is_parent_builtin(cmd->argv[0]))
-	{
-		handle_parent_builtin_middle(cmd, input_fd, fd[1], envp_addr);
-		return (fd[0]);
-	}*/
 	pid = fork();
 	if (pid == -1)
 		error_exit("fork", 1);
@@ -92,7 +88,7 @@ pid_t	handle_last_cmd(t_cmd *cmd, int input_fd, char **envp)
 	return (pid);
 }
 
-static void	wait_all(pid_t last_pid)
+void	wait_all(pid_t last_pid)
 {
 	int		status;
 	pid_t	pid;
@@ -109,29 +105,4 @@ static void	wait_all(pid_t last_pid)
 		}
 		pid = wait(&status);
 	}
-}
-
-int	execute_pipeline(t_cmd *cmd_list, char ***envp_addr)
-{
-	t_cmd	*cmd;
-	int		input_fd;
-	pid_t	last_pid;
-	char	**pipe_env;
-
-	if (!cmd_list)
-		return (1);
-	pipe_env = dup_envp(*envp_addr);
-	if (!pipe_env)
-		return (1);
-	input_fd = STDIN_FILENO;
-	cmd = cmd_list;
-	while (cmd->next)
-	{
-		input_fd = handle_middle_cmd(cmd, input_fd, &pipe_env);
-		cmd = cmd->next;
-	}
-	last_pid = handle_last_cmd(cmd, input_fd, pipe_env);
-	wait_all(last_pid);
-	free_envp(pipe_env);
-	return (g_exit_status);
 }
