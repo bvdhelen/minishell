@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_redirs.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: joperez2 <joperez2@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eldiaz-c <eldiaz-c@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 12:08:53 by joperez2          #+#    #+#             */
-/*   Updated: 2025/12/04 12:36:05 by joperez2         ###   ########.fr       */
+/*   Updated: 2025/12/06 20:24:55 by eldiaz-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int	redirect_if_needed(int *fd, int stdfd)
 		close(*fd);
 		return (-1);
 	}
-	close(fd);
+	close(*fd);
 	*fd = -1;
 	return (0);
 }
